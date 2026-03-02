@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/platform-pages.css" />
+    <style>
+      .field-error {
+        display: none;
+        color: #b91c1c;
+        font-size: 13px;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body class="platform-body login-page">
+    <%- include("partials/public-header", { activePage: "login" }) %>
+
+    <main class="platform-main">
+      <div class="auth-card-wrap">
+        <div class="auth-card">
+          <div class="auth-pattern">
+            <div class="auth-lock">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M17 9h-1V7a4 4 0 10-8 0v2H7a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2v-8a2 2 0 00-2-2zm-7-2a2 2 0 114 0v2h-4V7z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+          <div class="auth-content">
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Please enter your details to sign in</p>
+            <div id="error" class="auth-error" style="display:none;color:#b91c1c;margin-bottom:12px;"></div>
+            <form id="loginForm">
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <div class="input-password-wrap">
+                  <input class="form-control platform-input input-with-left-icon" id="email" name="email" type="email" placeholder="name@company.com" required />
+                  <span class="login-input-icon">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 5h18v14H3z"></path>
+                      <path d="M3 7l9 7 9-7"></path>
+                    </svg>
+                  </span>
+                </div>
+                <div id="emailError" class="field-error"></div>
+              </div>
+              <div class="password-row">
+                <label class="form-label">Password</label>
+                <a href="/forgot-password">Forgot password?</a>
+              </div>
+              <div class="form-group input-password-wrap">
+                <input class="form-control platform-input input-with-left-icon input-with-right-icon" id="password" name="password" type="password" placeholder="........" required />
+                <span class="login-input-icon">
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                    <path d="M8 11V8a4 4 0 018 0v3"></path>
+                  </svg>
+                </span>
+                <button class="toggle-password" type="button" id="togglePassword">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <div id="passwordError" class="field-error"></div>
+              </div>
+              <div class="platform-check">
+                <input type="checkbox" id="remember" />
+                <label for="remember"> Remember me for 30 days</label>
+              </div>
+              <button class="btn-platform" type="submit">Sign in</button>
+            </form>
+          </div>
+          <div class="auth-bottom">
+            Don't have an account? <a href="/register">Register now</a>
+          </div>
+        </div>
+        <div class="platform-footer">
+          <div class="platform-links">
+            <a href="#" onclick="return false;">Privacy Policy</a>
+            <a href="#" onclick="return false;">Terms of Service</a>
+            <a href="#" onclick="return false;">Cookie Settings</a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.getElementById("togglePassword").addEventListener("click", () => {
+        const input = document.getElementById("password");
+        input.type = input.type === "password" ? "text" : "password";
+      });
+
+      const errorBox = document.getElementById("error");
+      const emailError = document.getElementById("emailError");
+      const passwordError = document.getElementById("passwordError");
+
+      function clearFieldErrors() {
+        [emailError, passwordError].forEach((el) => {
+          el.style.display = "none";
+          el.textContent = "";
+        });
+      }
+
+      function showFieldErrors(details) {
+        if (!details || typeof details !== "object") return;
+        if (details.email) {
+          emailError.textContent = details.email;
+          emailError.style.display = "block";
+        }
+        if (details.password) {
+          passwordError.textContent = details.password;
+          passwordError.style.display = "block";
+        }
+      }
+
+      document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearFieldErrors();
+        errorBox.style.display = "none";
+        const formData = new FormData(e.target);
+        const payload = Object.fromEntries(formData.entries());
+        const res = await fetch("/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const body = await res.json();
+        if (!res.ok) {
+          showFieldErrors(body.details);
+          errorBox.style.color = "#b91c1c";
+          errorBox.style.display = "block";
+          errorBox.textContent = body.error || "Login failed";
+          return;
+        }
+        window.location.href = body.data.user.role === "admin" ? "/admin/posts" : "/me/posts";
+      });
+    </script>
+  </body>
+</html>

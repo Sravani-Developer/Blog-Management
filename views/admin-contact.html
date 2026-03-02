@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact - BlogPlatform</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --primary: #1f2b93;
+        --bg: #f3f5f9;
+        --card: #ffffff;
+        --text: #182c47;
+        --muted: #6a7f9c;
+        --line: #dce4ef;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Work Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .topbar {
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        padding: 14px 22px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary);
+        font-size: 30px;
+        font-weight: 800;
+      }
+
+      .brand svg { width: 18px; height: 18px; fill: currentColor; }
+
+      .menu {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+      }
+
+      .menu a {
+        color: #1d2f49;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .menu a.active {
+        color: var(--primary);
+      }
+
+      .menu button {
+        color: #1d2f49;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 0;
+        background: transparent;
+        padding: 0;
+      }
+
+      .page {
+        max-width: 1260px;
+        margin: 0 auto;
+        padding: 34px 20px 40px;
+      }
+
+      .title {
+        color: var(--primary);
+        font-size: 48px;
+        font-weight: 800;
+        line-height: 1;
+        margin: 0;
+      }
+
+      .subtitle {
+        margin-top: 18px;
+        color: #536b8a;
+        font-size: 16px;
+        line-height: 1.55;
+        max-width: 760px;
+      }
+
+      .grid {
+        margin-top: 26px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+      }
+
+      .cardx {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+      }
+
+      .form-card { padding: 24px; }
+
+      .label {
+        color: #212f49;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .inputx,
+      .textareax {
+        width: 100%;
+        border: 1px solid #c9d5e5;
+        border-radius: 10px;
+        background: #fff;
+        padding: 12px 14px;
+        color: #324867;
+        font-size: 14px;
+      }
+
+      .textareax {
+        min-height: 160px;
+        resize: vertical;
+      }
+
+      .field { margin-bottom: 14px; }
+
+      .send-btn {
+        width: 100%;
+        border: 0;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        height: 56px;
+      }
+
+      .status { margin-top: 10px; font-size: 13px; }
+
+      .info-col { padding: 0; }
+
+      .contact-line {
+        display: grid;
+        grid-template-columns: 54px 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+        align-items: start;
+      }
+
+      .icon-box {
+        width: 54px;
+        height: 54px;
+        border-radius: 10px;
+        background: #eef2f8;
+        color: var(--primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+      }
+
+      .line-title {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .line-text {
+        color: #5b7290;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .map-card {
+        margin-top: 20px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        min-height: 300px;
+        background:
+          radial-gradient(circle at 20% 30%, rgba(255,255,255,0.26) 0, transparent 18%),
+          radial-gradient(circle at 60% 65%, rgba(255,255,255,0.24) 0, transparent 20%),
+          linear-gradient(135deg, #b2b8c2, #848d9e 48%, #bfc5cf);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .map-pin {
+        position: absolute;
+        left: 52%;
+        top: 44%;
+        width: 62px;
+        height: 62px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        transform: translate(-50%, -50%);
+      }
+
+      .follow {
+        margin-top: 22px;
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+      }
+
+      .follow h4 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .social { display: flex; gap: 10px; }
+
+      .social a {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #eef2f8;
+        color: var(--primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 18px;
+      }
+
+      .footer {
+        border-top: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .footer-inner {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #8ca0ba;
+        font-size: 13px;
+      }
+
+      .footer-links a {
+        color: #607897;
+        text-decoration: none;
+        margin-left: 18px;
+      }
+
+      @media (max-width: 991.98px) {
+        .grid { grid-template-columns: 1fr; }
+        .title { font-size: 46px; }
+        .subtitle { font-size: 16px; }
+        .menu { gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+        .footer-inner { flex-direction: column; gap: 8px; align-items: flex-start; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="brand">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 12l9 10 9-10-9-10z"></path></svg>
+          BlogPlatform
+        </div>
+        <div class="menu">
+          <a href="/admin/home">Home</a>
+          <a href="/admin/posts/ui">Blog</a>
+          <a href="/admin/me/ui">About</a>
+          <a class="active" href="/admin/contact/ui">Contact</a>
+          <button id="logoutBtn" type="button">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <h1 class="title">Contact Us</h1>
+      <p class="subtitle">
+        Get in touch. Have questions or feedback about our blog? We'd love to hear from you.
+        Our team typically responds within 24 hours.
+      </p>
+
+      <div class="grid">
+        <section class="cardx form-card">
+          <form id="contactForm">
+            <div class="field">
+              <div class="label">Full Name</div>
+              <input id="fullName" class="inputx" type="text" placeholder="John Doe" required />
+            </div>
+            <div class="field">
+              <div class="label">Email Address</div>
+              <input id="email" class="inputx" type="email" placeholder="john@example.com" required />
+            </div>
+            <div class="field">
+              <div class="label">Subject</div>
+              <input id="subject" class="inputx" type="text" placeholder="How can we help?" required />
+            </div>
+            <div class="field">
+              <div class="label">Message</div>
+              <textarea id="message" class="textareax" placeholder="Write your message here..." required></textarea>
+            </div>
+            <button type="submit" class="send-btn">Send Message ➤</button>
+            <div id="status" class="status"></div>
+          </form>
+        </section>
+
+        <section class="info-col">
+          <div class="contact-line">
+            <div class="icon-box">✉</div>
+            <div>
+              <div class="line-title">Email Us</div>
+              <div class="line-text">support@blogplatform.com</div>
+            </div>
+          </div>
+
+          <div class="contact-line">
+            <div class="icon-box">📞</div>
+            <div>
+              <div class="line-title">Call Us</div>
+              <div class="line-text">+1 (555) 000-0000<br />Mon-Fri, 9am - 6pm PST</div>
+            </div>
+          </div>
+
+          <div class="contact-line">
+            <div class="icon-box">📍</div>
+            <div>
+              <div class="line-title">Our Office</div>
+              <div class="line-text">123 Tech Lane, Suite 456<br />San Francisco, CA 94103</div>
+            </div>
+          </div>
+
+          <div class="map-card">
+            <div class="map-pin">📍</div>
+          </div>
+
+          <div class="follow">
+            <h4>Follow our journey</h4>
+            <div class="social">
+              <a href="#" aria-label="Globe">🌐</a>
+              <a href="#" aria-label="Share">🔗</a>
+              <a href="#" aria-label="RSS">📡</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>© 2026 BlogPlatform Inc. All rights reserved.</div>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Help Center</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      $("#logoutBtn").on("click", function () {
+        $.post("/admin/logout").always(function () {
+          window.location.href = "/admin/login";
+        });
+      });
+
+      $("#contactForm").on("submit", function (e) {
+        e.preventDefault();
+        $("#status").removeClass("text-danger text-success").text("Sending...");
+
+        const payload = {
+          fullName: $("#fullName").val().trim(),
+          email: $("#email").val().trim(),
+          subject: $("#subject").val().trim(),
+          message: $("#message").val().trim()
+        };
+
+        if (!payload.fullName || !payload.email || !payload.subject || !payload.message) {
+          $("#status").addClass("text-danger").text("All fields are required.");
+          return;
+        }
+
+        // UI-only message handling for this sprint.
+        $("#status").addClass("text-success").text("Message sent. We will get back within 24 hours.");
+        $("#contactForm")[0].reset();
+      });
+    </script>
+    <script src="/sw-register.js"></script>
+  </body>
+</html>

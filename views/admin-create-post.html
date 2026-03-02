@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Post - BlogManager</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #1f2b93;
+        --bg: #f3f5f9;
+        --card: #ffffff;
+        --text: #1c2f4a;
+        --muted: #7a8eaa;
+        --line: #dce4ef;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Work Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .topbar {
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        padding: 10px 22px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary);
+        font-size: 32px;
+        font-weight: 800;
+      }
+
+      .brand svg {
+        width: 36px;
+        height: 36px;
+      }
+
+      .menu {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+      }
+
+      .menu a {
+        color: #4f6482;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .menu button {
+        color: #4f6482;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 0;
+        background: transparent;
+        padding: 0;
+      }
+
+      .menu a.active {
+        color: var(--primary);
+        border-bottom: 2px solid var(--primary);
+        padding-bottom: 8px;
+      }
+
+      .page {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 24px 22px 26px;
+      }
+
+      .crumb {
+        color: #788da7;
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+
+      .crumb .sep {
+        margin: 0 8px;
+      }
+
+      .title {
+        font-size: 40px;
+        font-weight: 800;
+        color: var(--primary);
+        margin: 0;
+        line-height: 1.05;
+      }
+
+      .subtitle {
+        margin: 8px 0 28px;
+        color: #6c81a0;
+        font-size: 18px;
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 18px;
+      }
+
+      .field-card,
+      .editor-card,
+      .side-card,
+      .preview-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+      }
+
+      .field-card {
+        padding: 18px 20px;
+        margin-bottom: 14px;
+      }
+
+      .label {
+        color: #8a9dbc;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .field-input,
+      .field-textarea,
+      .field-select {
+        width: 100%;
+        border: 0;
+        outline: none;
+        background: transparent;
+        color: #2f4663;
+        padding: 0;
+      }
+
+      .field-input::placeholder,
+      .field-textarea::placeholder {
+        color: #b4bfd4;
+      }
+
+      .field-input {
+        font-size: 18px;
+        font-weight: 700;
+        height: 56px;
+      }
+
+      .field-textarea {
+        font-size: 16px;
+        min-height: 92px;
+        resize: vertical;
+      }
+
+      .editor-card {
+        overflow: hidden;
+      }
+
+      .toolbar {
+        border-bottom: 1px solid var(--line);
+        background: #f8faff;
+        padding: 12px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .tool-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .tool {
+        border: 0;
+        background: transparent;
+        color: #4f6483;
+        font-weight: 700;
+        border-radius: 7px;
+        width: 30px;
+        height: 30px;
+        font-size: 15px;
+      }
+
+      .tool:hover {
+        background: #eaf0f8;
+      }
+
+      .editor {
+        width: 100%;
+        min-height: 540px;
+        border: 0;
+        outline: none;
+        resize: vertical;
+        padding: 20px;
+        font-size: 16px;
+        color: #2f4663;
+      }
+
+      .editor::placeholder {
+        color: #c0c9d9;
+      }
+
+      .side-card {
+        padding: 18px;
+        margin-bottom: 16px;
+      }
+
+      .upload-box {
+        border: 2px dashed #d0d9e8;
+        border-radius: 12px;
+        background: #f6f8fc;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #607795;
+        padding: 18px;
+      }
+
+      .setting-label {
+        font-size: 14px;
+        font-weight: 700;
+        margin: 14px 0 8px;
+        color: #253a56;
+      }
+
+      .field-select,
+      .tag-input {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        height: 50px;
+        padding: 0 12px;
+        background: #fff;
+        font-size: 15px;
+      }
+
+      .chip-row {
+        margin-top: 10px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        background: #eef2f9;
+        color: var(--primary);
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-top: 1px solid #edf2f8;
+      }
+
+      .switch {
+        width: 46px;
+        height: 26px;
+        border-radius: 999px;
+        background: #d9e1ee;
+        position: relative;
+      }
+
+      .switch.on {
+        background: var(--primary);
+      }
+
+      .switch::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        top: 3px;
+        left: 3px;
+      }
+
+      .switch.on::after {
+        left: 23px;
+      }
+
+      .preview-card {
+        background: #202a92;
+        border-color: #202a92;
+        color: #fff;
+        padding: 16px;
+      }
+
+      .preview-box {
+        height: 168px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        margin-top: 14px;
+      }
+
+      .preview-line {
+        height: 14px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.2);
+        margin-top: 10px;
+      }
+
+      .actions {
+        margin-top: 24px;
+        padding-top: 22px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .discard {
+        color: #6f82a0;
+        font-size: 18px;
+        font-weight: 600;
+        border: 0;
+        background: transparent;
+      }
+
+      .right-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-outline-main {
+        border: 1px solid #c8d4e5;
+        background: #fff;
+        color: #293f5c;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 16px;
+        padding: 10px 22px;
+      }
+
+      .btn-publish {
+        border: 0;
+        background: var(--primary);
+        color: #fff;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 16px;
+        padding: 10px 22px;
+      }
+
+      .status {
+        margin-top: 12px;
+        font-size: 14px;
+      }
+
+      @media (max-width: 991.98px) {
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .title {
+          font-size: 36px;
+        }
+
+        .subtitle {
+          font-size: 16px;
+        }
+
+        .field-input {
+          font-size: 16px;
+          height: 48px;
+        }
+
+        .field-textarea,
+        .editor {
+          font-size: 15px;
+        }
+
+        .actions {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
+        }
+
+        .right-actions {
+          width: 100%;
+        }
+
+        .btn-outline-main,
+        .btn-publish {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="brand">
+          <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 12C8 9.79086 9.79086 8 12 8H36C38.2091 8 40 9.79086 40 12V36C40 38.2091 38.2091 40 36 40H12C9.79086 40 8 38.2091 8 36V12Z" fill="currentColor"></path>
+            <path d="M16 16H32V20H16V16Z" fill="#fff"></path>
+            <path d="M16 24H32V28H16V24Z" fill="#fff"></path>
+            <path d="M16 32H24V36H16V32Z" fill="#fff"></path>
+          </svg>
+          BlogManager
+        </div>
+
+        <nav class="menu">
+          <a href="/admin/home">Home</a>
+          <a class="active" href="/admin/posts/ui">Blog</a>
+          <a href="/admin/me/ui">About</a>
+          <a href="/admin/contact/ui">Contact</a>
+          <button id="logoutBtn" type="button">Logout</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <div class="crumb">
+        Dashboard <span class="sep">›</span> Posts <span class="sep">›</span>
+        <strong style="color: var(--primary)">Create New Post</strong>
+      </div>
+      <h1 class="title">Create New Post</h1>
+      <p class="subtitle">Draft your story and share it with the world.</p>
+
+      <form id="postForm">
+        <div class="content-grid">
+          <section>
+            <div class="field-card">
+              <div class="label">Post Title</div>
+              <input id="title" class="field-input" type="text" placeholder="Enter a catchy title..." required />
+            </div>
+
+            <div class="field-card">
+              <div class="label">Short Description</div>
+              <textarea id="shortDescription" class="field-textarea" placeholder="Brief summary for SEO and social sharing..."></textarea>
+            </div>
+
+            <div class="editor-card">
+              <div class="toolbar">
+                <div class="tool-group">
+                  <button class="tool" type="button">B</button>
+                  <button class="tool" type="button"><i>I</i></button>
+                  <button class="tool" type="button"><u>U</u></button>
+                  <button class="tool" type="button">•</button>
+                  <button class="tool" type="button">1.</button>
+                  <button class="tool" type="button">❝</button>
+                  <button class="tool" type="button">🔗</button>
+                  <button class="tool" type="button">🖼</button>
+                </div>
+                <div class="tool-group">
+                  <button class="tool" type="button">↶</button>
+                  <button class="tool" type="button">↷</button>
+                </div>
+              </div>
+              <textarea
+                id="content"
+                class="editor"
+                placeholder="Write your masterpiece here..."
+                required
+              ></textarea>
+            </div>
+          </section>
+
+          <aside>
+            <div class="side-card">
+              <div class="label">Featured Image</div>
+              <div class="upload-box">
+                <div>
+                  <div style="font-size: 34px; color: var(--primary);">☁</div>
+                  <div style="font-weight: 700; color: var(--primary);">Click or drag image to upload</div>
+                  <div style="font-size: 13px; color: #91a2bb;">SVG, PNG, JPG (max. 5MB)</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="side-card">
+              <div class="label">Post Settings</div>
+
+              <div class="setting-label">Category</div>
+              <select id="category" class="field-select">
+                <option>Select a category</option>
+                <option>Technology</option>
+                <option>Backend</option>
+                <option>JavaScript</option>
+              </select>
+
+              <div class="setting-label">Tags</div>
+              <input id="tags" class="tag-input" type="text" placeholder="Add tags..." />
+              <div class="chip-row">
+                <span class="chip">UX Design ×</span>
+                <span class="chip">Web ×</span>
+              </div>
+
+              <div class="toggle-row">
+                <div>
+                  <div style="font-weight: 700;">Allow Comments</div>
+                  <div style="font-size: 13px; color: #8da0ba;">Readers can reply to this post</div>
+                </div>
+                <div class="switch on"></div>
+              </div>
+
+              <div class="toggle-row">
+                <div>
+                  <div style="font-weight: 700;">Public Visibility</div>
+                  <div style="font-size: 13px; color: #8da0ba;">Visible to everyone on the web</div>
+                </div>
+                <div class="switch on"></div>
+              </div>
+            </div>
+
+            <div class="preview-card">
+              <div style="font-weight: 700; font-size: 18px;">👁 Live Preview</div>
+              <div class="preview-box"></div>
+              <div class="preview-line" style="width: 76%;"></div>
+              <div class="preview-line"></div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="actions">
+          <button id="discardBtn" class="discard" type="button">🗑 Discard Draft</button>
+          <div class="right-actions">
+            <button class="btn-outline-main" type="button" id="saveDraftBtn">Save as Draft</button>
+            <button class="btn-publish" type="submit">🚀 Publish Post</button>
+          </div>
+        </div>
+
+        <div id="status" class="status"></div>
+      </form>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      const updateLivePreview = () => {
+        const title = $("#title").val().trim() || "Untitled draft";
+        const content = $("#content").val().trim() || "No content yet";
+        const lines = $(".preview-line");
+        lines.eq(0).css("width", Math.min(90, Math.max(30, title.length * 2)) + "%");
+        lines.eq(1).css("width", Math.min(100, Math.max(40, content.length / 8)) + "%");
+      };
+
+      $("#title, #content").on("input", updateLivePreview);
+      updateLivePreview();
+
+      $("#discardBtn").on("click", function () {
+        $("#postForm")[0].reset();
+        $("#status").removeClass("text-danger text-success").text("");
+        updateLivePreview();
+      });
+
+      $("#saveDraftBtn").on("click", function () {
+        $("#status").removeClass("text-danger").addClass("text-success").text("Draft saved locally (UI only)");
+      });
+
+      $("#logoutBtn").on("click", function () {
+        $.post("/admin/logout").always(function () {
+          window.location.href = "/admin/login";
+        });
+      });
+
+      $("#postForm").on("submit", function (e) {
+        e.preventDefault();
+        $("#status").removeClass("text-danger text-success").text("Publishing...");
+
+        $.ajax({
+          url: "/admin/posts",
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            title: $("#title").val().trim(),
+            content: $("#content").val().trim()
+          })
+        })
+          .done(function (res) {
+            if (res.success) {
+              $("#status").addClass("text-success").text("Post published successfully");
+              $("#postForm")[0].reset();
+              updateLivePreview();
+            } else {
+              $("#status").addClass("text-danger").text(res.error || "Failed to publish");
+            }
+          })
+          .fail(function (xhr) {
+            const msg = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "Failed to publish";
+            $("#status").addClass("text-danger").text(msg);
+          });
+      });
+    </script>
+    <script src="/sw-register.js"></script>
+  </body>
+</html>

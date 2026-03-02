@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f4f6fb;
+        --surface: #ffffff;
+        --line: #dbe2ef;
+        --text: #0f1830;
+        --muted: #617694;
+        --brand: #232d91;
+        --accent: #f97316;
+        --accent-soft: #fff1e8;
+      }
+      * { box-sizing: border-box; }
+      .material-symbols-outlined {
+        font-family: "Material Symbols Outlined";
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-smoothing: antialiased;
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      body { margin: 0; font-family: "Work Sans", sans-serif; background: var(--bg); color: var(--text); }
+
+      .topbar { background: #fff; border-bottom: 1px solid var(--line); }
+      .topbar-inner { max-width: 1340px; margin: 0 auto; padding: 14px 18px; display: flex; align-items: center; gap: 16px; }
+      .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 800; font-size: 20px; }
+      .brand .logo { color: var(--brand); display: inline-flex; }
+      .search-wrap { flex: 1 1 420px; max-width: 460px; position: relative; }
+      .search-wrap .material-symbols-outlined { position: absolute; left: 12px; top: 11px; color: #8495b2; font-size: 20px; }
+      .search-wrap input { width: 100%; height: 42px; border-radius: 10px; border: 1px solid #cfd9ea; background: #f6f8fd; padding: 0 14px 0 40px; font-size: 14px; }
+      .nav, .admin-nav { margin-left: auto; display: flex; align-items: center; gap: 20px; }
+      .nav a, .admin-nav a { color: #2b4062; text-decoration: none; font-size: 15px; font-weight: 500; }
+      .nav a.active, .admin-nav a.active { color: var(--brand); font-weight: 700; border-bottom: 2px solid var(--brand); padding-bottom: 8px; }
+      .menu { position: relative; }
+      .menu-btn { border: 0; background: transparent; color: #2b4062; font-size: 15px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+      .menu-list { display: none; position: absolute; right: 0; top: 28px; width: 190px; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 14px 28px rgba(15, 24, 48, 0.12); padding: 6px 0; z-index: 40; }
+      .menu-list.open { display: block; }
+      .menu-list a, .menu-list button { display: block; width: 100%; background: transparent; border: 0; text-align: left; padding: 10px 12px; color: #304766; font-size: 14px; cursor: pointer; }
+      .menu-list a:hover, .menu-list button:hover { background: #f2f5fc; color: var(--brand); }
+      .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+
+      .page { max-width: 1340px; margin: 0 auto; padding: 28px 18px 48px; }
+      .layout { display: grid; grid-template-columns: 260px 1fr; gap: 24px; align-items: start; }
+      .sidebar .title { margin: 0; font-size: 18px; font-weight: 800; }
+      .sidebar .subtitle { margin: 4px 0 18px; font-size: 14px; color: var(--muted); }
+      .tabs { display: grid; gap: 8px; }
+      .tab { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; text-decoration: none; color: #324969; font-weight: 500; }
+      .tab .material-symbols-outlined { font-size: 20px; vertical-align: middle; }
+      .tab.active { background: var(--accent-soft); color: var(--accent); border-left: 3px solid var(--accent); padding-left: 11px; }
+
+      .main h1 { margin: 0; font-size: 22px; font-weight: 800; }
+      .main .sub { margin: 6px 0 18px; color: var(--muted); font-size: 16px; }
+      .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+      .panel + .panel { margin-top: 18px; }
+      .panel-body { padding: 22px; }
+      .panel-head { padding: 18px 22px; border-bottom: 1px solid #edf2fa; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .panel-head h2 { margin: 0; font-size: 16px; font-weight: 800; }
+      .panel-head p { margin: 3px 0 0; font-size: 13px; color: var(--muted); }
+      .icon-badge { width: 42px; height: 42px; border-radius: 12px; background: #fff2e9; color: var(--accent); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+      .icon-badge .material-symbols-outlined { font-size: 20px; }
+      .head-left { display: flex; align-items: center; gap: 12px; }
+
+      .msg { display: none; margin-bottom: 14px; padding: 10px 12px; border-radius: 10px; font-size: 14px; }
+      .msg.ok { background: #dcfce7; border: 1px solid #bbf7d0; color: #166534; }
+      .msg.err { background: #fee2e2; border: 1px solid #fecaca; color: #b91c1c; }
+
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .field { margin-bottom: 14px; }
+      label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 700; color: #1f324f; }
+      input { width: 100%; height: 46px; border: 1px solid #c7d2e6; border-radius: 10px; background: #f8faff; padding: 0 12px; font-size: 15px; color: #253a5b; }
+      input.readonly { background: #f2f5fb; color: #6f84a4; }
+      .field-error { display: none; color: #b91c1c; font-size: 13px; margin-top: 6px; }
+      .actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 2px; }
+      .muted-note { color: #7387a5; font-size: 13px; }
+      .btn-primary { border: 0; background: var(--accent); color: #fff; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 18px rgba(249, 115, 22, 0.2); }
+
+      .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+      .mini-card { border: 1px solid #ecf1f8; background: #fbfcff; border-radius: 12px; padding: 14px; }
+      .mini-card h3 { margin: 0 0 6px; font-size: 14px; font-weight: 800; }
+      .mini-card p { margin: 0 0 10px; font-size: 13px; color: var(--muted); line-height: 1.4; }
+      .mini-card a { color: var(--brand); text-decoration: none; font-weight: 700; font-size: 13px; }
+
+      @media (max-width: 1040px) {
+        .layout { grid-template-columns: 1fr; }
+        .cards { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 760px) {
+        .page { padding: 22px 14px 34px; }
+        .grid { grid-template-columns: 1fr; }
+        .actions { flex-direction: column; align-items: stretch; }
+        .btn-primary { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <% if (currentUser && currentUser.role === "admin") { %>
+      <%- include("partials/admin-header", { activeAdminPage: "", currentUser }) %>
+    <% } else { %>
+      <%- include("partials/auth-header", { activePage: "dashboard", navClass: "nav", showSearch: false, currentUser }) %>
+    <% } %>
+
+    <main class="page">
+      <div class="layout">
+        <aside class="sidebar">
+          <h2 class="title">Account Settings</h2>
+          <p class="subtitle">Manage your profile and account preferences.</p>
+          <nav class="tabs">
+            <a class="tab <%= activeTab === 'personal' ? 'active' : '' %>" href="/me">
+              <span class="material-symbols-outlined">person</span>
+              Personal Info
+            </a>
+            <a class="tab <%= activeTab === 'security' ? 'active' : '' %>" href="/me/security">
+              <span class="material-symbols-outlined">shield</span>
+              Security
+            </a>
+            <a class="tab" href="/me/posts">
+              <span class="material-symbols-outlined">description</span>
+              My Posts
+            </a>
+          </nav>
+        </aside>
+
+        <section class="main">
+          <h1>Personal Information</h1>
+          <p class="sub">Update your account profile details and review your account information.</p>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div class="head-left">
+                <span class="icon-badge"><span class="material-symbols-outlined">badge</span></span>
+                <div>
+                  <h2>Profile Details</h2>
+                  <p>Keep your name and email accurate for account access.</p>
+                </div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div id="profileMsg" class="msg"></div>
+              <form id="profileForm">
+                <div class="grid">
+                  <div class="field">
+                    <label for="name">Full Name</label>
+                    <input id="name" name="name" value="<%= user ? user.name : '' %>" required />
+                    <div id="nameError" class="field-error"></div>
+                  </div>
+                  <div class="field">
+                    <label for="email">Email Address</label>
+                    <input id="email" name="email" type="email" value="<%= user ? user.email : '' %>" required />
+                    <div id="emailError" class="field-error"></div>
+                  </div>
+                </div>
+                <div class="grid">
+                  <div class="field">
+                    <label for="role">Role</label>
+                    <input id="role" class="readonly" value="<%= user ? user.role : '' %>" readonly />
+                  </div>
+                  <div class="field">
+                    <label for="createdAt">Joined</label>
+                    <input id="createdAt" class="readonly" value="<%= user && user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '' %>" readonly />
+                  </div>
+                </div>
+                <div class="actions">
+                  <span class="muted-note">Changes are applied immediately after saving.</span>
+                  <button class="btn-primary" type="submit">Save Profile</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div class="head-left">
+                <span class="icon-badge"><span class="material-symbols-outlined">bolt</span></span>
+                <div>
+                  <h2>Quick Access</h2>
+                  <p>Jump to common account and content actions.</p>
+                </div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="cards">
+                <div class="mini-card">
+                  <h3>Security Settings</h3>
+                  <p>Change your password and review account protection settings.</p>
+                  <a href="/me/security">Open Security</a>
+                </div>
+                <div class="mini-card">
+                  <h3>My Posts</h3>
+                  <p>Create, update, and delete only the posts that belong to your account.</p>
+                  <a href="/me/posts">Go to Posts</a>
+                </div>
+                <div class="mini-card">
+                  <h3>Public Home</h3>
+                  <p>Review featured and recent posts as seen by public visitors.</p>
+                  <a href="/">Open Home</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        var form = document.getElementById("profileForm");
+        var msg = document.getElementById("profileMsg");
+        var nameError = document.getElementById("nameError");
+        var emailError = document.getElementById("emailError");
+        if (!form) return;
+
+        function clearFieldErrors() {
+          [nameError, emailError].forEach(function (el) {
+            el.style.display = "none";
+            el.textContent = "";
+          });
+        }
+
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          msg.style.display = "none";
+          clearFieldErrors();
+          try {
+            var res = await fetch("/me", {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+              },
+              credentials: "same-origin",
+              body: JSON.stringify({
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value
+              })
+            });
+
+            if (res.status === 401) {
+              window.location.href = "/";
+              return;
+            }
+
+            var body = await res.json().catch(function () { return {}; });
+            if (!res.ok && body.details && typeof body.details === "object") {
+              if (body.details.name) {
+                nameError.textContent = body.details.name;
+                nameError.style.display = "block";
+              }
+              if (body.details.email) {
+                emailError.textContent = body.details.email;
+                emailError.style.display = "block";
+              }
+            }
+            msg.className = "msg " + (res.ok ? "ok" : "err");
+            msg.textContent = res.ok ? "Profile updated successfully." : (body.error || "Unable to update profile.");
+            msg.style.display = "block";
+          } catch (err) {
+            msg.className = "msg err";
+            msg.textContent = "Network error. Please try again.";
+            msg.style.display = "block";
+          }
+        });
+      })();
+    </script>
+    <script src="/js/auth-header.js"></script>
+  </body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Posts Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f4f6fb;
+        --surface: #ffffff;
+        --line: #dbe2ef;
+        --text: #0f1830;
+        --muted: #5f7392;
+        --brand: #232d91;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Work Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .topbar { background: #fff; border-bottom: 1px solid var(--line); }
+      .topbar-inner { max-width: 1340px; margin: 0 auto; padding: 14px 18px; display: flex; align-items: center; gap: 16px; }
+      .brand {
+        display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-weight: 800; font-size: 20px; text-decoration: none;
+      }
+      .brand .logo {
+        color: var(--brand);
+        display: inline-flex;
+      }
+      .search-wrap { flex: 1; max-width: 380px; position: relative; }
+      .search-wrap input {
+        width: 100%;
+        height: 44px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #eff3fa;
+        padding: 0 14px 0 40px;
+        font-size: 15px;
+      }
+      .search-wrap .material-symbols-outlined {
+        position: absolute;
+        left: 12px;
+        top: 9px;
+        color: #7f92af;
+      }
+      .nav { margin-left: auto; display: flex; align-items: center; gap: 22px; }
+      .nav a { text-decoration: none; color: #283d61; font-weight: 500; font-size: 15px; }
+      .nav .menu { position: relative; }
+      .nav .menu-btn { border: 0; background: transparent; color: #283d61; font-weight: 500; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+      .nav .menu-list {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 26px;
+        width: 170px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow: 0 12px 24px rgba(16, 24, 40, 0.12);
+        padding: 6px 0;
+        z-index: 40;
+      }
+      .nav .menu-list.open { display: block; }
+      .nav .menu-list a,
+      .nav .menu-list button {
+        display: block;
+        width: 100%;
+        border: 0;
+        background: transparent;
+        text-align: left;
+        padding: 9px 12px;
+        color: #2d4366;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .nav .menu-list a:hover,
+      .nav .menu-list button:hover { background: #f3f6fd; color: var(--brand); }
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--brand);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav a.active {
+        color: var(--brand);
+        border-bottom: 2px solid var(--brand);
+        padding-bottom: 8px;
+        font-weight: 700;
+      }
+      .main {
+        max-width: 1340px;
+        margin: 0 auto;
+        padding: 28px 18px 42px;
+      }
+      .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .head h1 {
+        margin: 0;
+        font-size: 46px;
+        line-height: 1.05;
+        font-weight: 800;
+      }
+      .head p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 22px;
+        line-height: 1.35;
+        letter-spacing: 0.1px;
+      }
+      .new-btn {
+        margin-top: 6px;
+        background: var(--brand);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 12px;
+        height: 54px;
+        padding: 0 24px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+        font-weight: 700;
+        box-shadow: 0 8px 18px rgba(35, 45, 145, 0.24);
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+      .stat {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .stat .icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        font-size: 24px;
+      }
+      .icon.posts { background: #eef0fc; color: #2a3198; }
+      .icon.views { background: #e8f8ef; color: #15803d; }
+      .icon.comments { background: #fff5e8; color: #ca6b00; }
+      .stat label {
+        display: block;
+        color: #5d7191;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .stat strong {
+        font-size: 18px;
+      }
+      .table-wrap {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .table-tools {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+      }
+      .sort-form {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #5d7191;
+        font-size: 14px;
+      }
+      .sort-form select {
+        height: 36px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: #304667;
+        font-size: 14px;
+        padding: 0 10px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      thead th {
+        text-align: left;
+        padding: 16px;
+        font-size: 14px;
+        color: #2f4466;
+        border-bottom: 1px solid var(--line);
+      }
+      tbody td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #e8edf6;
+        font-size: 14px;
+        color: #263854;
+      }
+      .title-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .title-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 9px;
+        background: #eef2fa;
+        color: #5c6dad;
+        display: grid;
+        place-items: center;
+      }
+      .actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .actions a, .actions button {
+        border: 0;
+        background: transparent;
+        color: #8091ad;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .actions a:hover, .actions button:hover { color: var(--brand); }
+      .foot {
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #5d7191;
+        font-size: 14px;
+      }
+      .pagination {
+        display: flex;
+        gap: 8px;
+      }
+      .page {
+        width: 38px;
+        height: 38px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        color: #304667;
+        display: grid;
+        place-items: center;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .page.active {
+        background: var(--brand);
+        color: #fff;
+        border-color: var(--brand);
+      }
+      .footer {
+        max-width: 1340px;
+        margin: 18px auto 26px;
+        padding: 16px 18px 0;
+        border-top: 1px solid #dde4f0;
+        color: #687d9c;
+        font-size: 15px;
+        text-align: center;
+      }
+      @media (max-width: 940px) {
+        .head h1 { font-size: 34px; }
+        .head p { font-size: 19px; }
+        .stats { grid-template-columns: 1fr; }
+        .topbar-inner { flex-wrap: wrap; }
+        .nav { width: 100%; margin-left: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <%- include("partials/auth-header", { activePage: "dashboard", navClass: "nav", showSearch: true, searchPlaceholder: "Search posts..." }) %>
+
+    <main class="main">
+      <%
+        const totalPosts = stats && typeof stats.totalPosts === "number" ? stats.totalPosts : posts.length;
+        const totalViews = ((stats && typeof stats.totalViews === "number" ? stats.totalViews : 0)).toLocaleString();
+        const pager = pagination || { page: 1, limit: posts.length || 10, total: totalPosts, totalPages: 1 };
+        const currentSortKey = typeof currentSort === "string" ? currentSort : (pager.sort || "newest");
+        const availableSorts = Array.isArray(sortOptions) && sortOptions.length
+          ? sortOptions
+          : [
+            { key: "newest", label: "Newest first" },
+            { key: "most-viewed", label: "Most viewed" },
+            { key: "featured", label: "Featured first" }
+          ];
+        const sortParam = encodeURIComponent(currentSortKey);
+        const startRow = pager.total === 0 ? 0 : ((pager.page - 1) * pager.limit) + 1;
+        const endRow = Math.min(pager.page * pager.limit, pager.total);
+      %>
+      <div class="head">
+        <div>
+          <h1>My Posts</h1>
+          <p>Manage and organize your published content.</p>
+        </div>
+        <a class="new-btn" href="/me/posts/new">
+          <span class="material-symbols-outlined">add_circle</span>
+          Create New Post
+        </a>
+      </div>
+
+      <section class="stats">
+        <article class="stat">
+          <div class="icon posts"><span class="material-symbols-outlined">description</span></div>
+          <div>
+            <label>Total Posts</label>
+            <strong><%= totalPosts %></strong>
+          </div>
+        </article>
+        <article class="stat">
+          <div class="icon views"><span class="material-symbols-outlined">visibility</span></div>
+          <div>
+            <label>Total Views</label>
+            <strong><%= totalViews %></strong>
+          </div>
+        </article>
+      </section>
+
+      <section class="table-wrap">
+        <div class="table-tools">
+          <form class="sort-form" method="get" action="/me/posts">
+            <label for="sortSelect">Sort by</label>
+            <select id="sortSelect" name="sort" onchange="this.form.submit()">
+              <% availableSorts.forEach(function(opt) { %>
+              <option value="<%= opt.key %>" <%= opt.key === currentSortKey ? "selected" : "" %>><%= opt.label %></option>
+              <% }) %>
+            </select>
+            <input type="hidden" name="limit" value="<%= pager.limit %>" />
+          </form>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Views</th>
+              <th>Created</th>
+              <th>Updated</th>
+              <th style="text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!posts.length) { %>
+            <tr>
+              <td colspan="5">No posts found. Create your first post.</td>
+            </tr>
+            <% } %>
+            <% posts.forEach(function(post) { %>
+            <tr>
+              <td>
+                <div class="title-cell">
+                  <span class="title-icon material-symbols-outlined">description</span>
+                  <strong><%= post.title %></strong>
+                </div>
+              </td>
+              <td><%= (post.viewCount || 0).toLocaleString() %></td>
+              <td><%= new Date(post.createdAt).toLocaleDateString() %></td>
+              <td><%= new Date(post.updatedAt || post.createdAt).toLocaleDateString() %></td>
+              <td style="text-align:right">
+                <div class="actions">
+                  <a href="/posts/<%= post._id %>" title="View"><span class="material-symbols-outlined">visibility</span></a>
+                  <a href="/me/posts/<%= post._id %>/edit" title="Edit"><span class="material-symbols-outlined">edit</span></a>
+                  <button title="Delete" onclick="deletePost('<%= post._id %>')">
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+        <div class="foot">
+          <div>Showing <strong><%= startRow %> to <%= endRow %></strong> of <strong><%= pager.total %></strong> results</div>
+          <div class="pagination">
+            <% if (pager.page > 1) { %>
+            <a class="page" href="/me/posts?page=<%= pager.page - 1 %>&limit=<%= pager.limit %>&sort=<%= sortParam %>">‹</a>
+            <% } %>
+            <% for (let p = 1; p <= pager.totalPages; p++) { if (p > 5 && Math.abs(p - pager.page) > 1) continue; %>
+            <a class="page <%= p === pager.page ? 'active' : '' %>" href="/me/posts?page=<%= p %>&limit=<%= pager.limit %>&sort=<%= sortParam %>"><%= p %></a>
+            <% } %>
+            <% if (pager.page < pager.totalPages) { %>
+            <a class="page" href="/me/posts?page=<%= pager.page + 1 %>&limit=<%= pager.limit %>&sort=<%= sortParam %>">›</a>
+            <% } %>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">© 2026 Blog Platform. All rights reserved.</footer>
+
+    <script>
+      async function deletePost(id) {
+        if (!confirm("Delete this post?")) return;
+        const res = await fetch(`/me/posts/${id}`, {
+          method: "DELETE",
+          headers: { Accept: "application/json" }
+        });
+        if (res.ok) window.location.reload();
+      }
+    </script>
+    <script src="/js/auth-header.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - BlogPlatform</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --primary: #1a227f;
+        --bg: #f3f5f9;
+        --text: #273a56;
+        --muted: #637894;
+        --line: #e1e7f0;
+        --field: #bfd0e2;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Work Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .app {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 72px;
+        background: #fff;
+        border-bottom: 1px solid #d9e1ec;
+        padding: 0 42px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--primary);
+      }
+
+      .brand svg {
+        width: 28px;
+        height: 28px;
+      }
+
+      .brand h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.2px;
+      }
+
+      .top-signin {
+        min-width: 90px;
+        height: 40px;
+        border: 0;
+        border-radius: 9px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 16px;
+        white-space: nowrap;
+      }
+
+      .main {
+        flex: 1;
+        padding: 32px 20px 34px;
+      }
+
+      .card {
+        max-width: 520px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #ced9e6;
+        border-radius: 14px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        padding: 34px 34px 30px;
+      }
+
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .back svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+      }
+
+      .title {
+        margin: 18px 0 0;
+        text-align: center;
+        color: var(--primary);
+        font-size: 40px;
+        font-weight: 800;
+        line-height: 1.12;
+      }
+
+      .subtitle {
+        margin: 8px 0 0;
+        text-align: center;
+        color: #56708f;
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      .form {
+        margin-top: 28px;
+      }
+
+      .group {
+        margin-bottom: 20px;
+      }
+
+      .label,
+      .row-label label {
+        margin-bottom: 8px;
+        color: #223651;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .row-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .forgot {
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .field {
+        width: 100%;
+        height: 50px;
+        border: 1px solid var(--field);
+        border-radius: 9px;
+        padding: 0 16px;
+        font-size: 15px;
+        color: #2a3f5b;
+        outline: none;
+      }
+
+      .field::placeholder {
+        color: #879db8;
+      }
+
+      .field:focus {
+        border-color: #8ea3bf;
+      }
+
+      .password-wrap {
+        position: relative;
+      }
+
+      .toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 30px;
+        height: 30px;
+        border: 0;
+        background: transparent;
+        color: #8ea0b7;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        cursor: pointer;
+        z-index: 2;
+      }
+
+      .toggle svg {
+        width: 21px;
+        height: 21px;
+        fill: currentColor;
+      }
+
+      .eye-off {
+        display: none;
+      }
+
+      .toggle.is-visible .eye-on {
+        display: none;
+      }
+
+      .toggle.is-visible .eye-off {
+        display: inline;
+      }
+
+      .terms {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 4px 0 0;
+      }
+
+      .terms input {
+        margin-top: 4px;
+      }
+
+      .terms label {
+        margin: 0;
+        color: #344c68;
+        font-size: 14px;
+        line-height: 1.35;
+      }
+
+      .terms a {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .login {
+        width: 100%;
+        height: 54px;
+        margin-top: 22px;
+        border: 0;
+        border-radius: 9px;
+        background: #232b91;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 700;
+        box-shadow: 0 8px 16px rgba(26, 34, 127, 0.18);
+      }
+
+      .status {
+        min-height: 20px;
+        margin-top: 10px;
+        text-align: center;
+        font-size: 12px;
+      }
+
+      .signup {
+        margin-top: 24px;
+        padding-top: 18px;
+        border-top: 1px solid #e5ebf3;
+        text-align: center;
+        color: #506887;
+        font-size: 12px;
+      }
+
+      .signup a {
+        color: var(--primary);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .footer {
+        border-top: 1px solid #dce3ed;
+        background: #fff;
+        padding: 42px 42px 24px;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr 1fr auto;
+        gap: 28px;
+        align-items: start;
+      }
+
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary);
+        font-size: 17px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .footer-brand svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .footer-muted {
+        margin-top: 18px;
+        color: #667c97;
+        font-size: 13px;
+      }
+
+      .footer-head {
+        margin: 0 0 14px;
+        color: #1f304a;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+
+      .footer-link {
+        display: block;
+        color: #5d748f;
+        text-decoration: none;
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+
+      .social {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .social a {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #e9eef4;
+        color: #506a86;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
+
+      .social svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+      }
+
+      .copyright {
+        margin-top: 28px;
+        padding-top: 18px;
+        border-top: 1px solid #e5ebf2;
+        color: #9aabc0;
+        font-size: 12px;
+      }
+
+      @media (max-width: 767.98px) {
+        .topbar,
+        .footer {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+
+        .brand h2 {
+          font-size: 18px;
+          transform: none;
+        }
+
+        .top-signin {
+          min-width: 82px;
+          height: 36px;
+          font-size: 14px;
+        }
+
+        .main {
+          padding: 16px 12px 22px;
+        }
+
+        .card {
+          padding: 20px 14px;
+          border-radius: 12px;
+        }
+
+        .title {
+          font-size: 36px;
+        }
+
+        .subtitle {
+          font-size: 17px;
+        }
+
+        .footer-muted {
+          margin-bottom: 16px;
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .social {
+          justify-content: flex-start;
+          margin-top: 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar d-flex align-items-center justify-content-between">
+        <div class="brand">
+          <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 12C8 9.79086 9.79086 8 12 8H36C38.2091 8 40 9.79086 40 12V36C40 38.2091 38.2091 40 36 40H12C9.79086 40 8 38.2091 8 36V12Z" fill="#1a227f"></path>
+            <path d="M16 16H32V20H16V16Z" fill="white"></path>
+            <path d="M16 24H32V28H16V24Z" fill="white"></path>
+            <path d="M16 32H24V36H16V32Z" fill="white"></path>
+          </svg>
+          <h2>InsightBlog</h2>
+        </div>
+        <button class="top-signin" type="button">Sign In</button>
+      </header>
+
+      <main class="main">
+        <section class="card">
+          <a class="back" href="/admin/home">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 11H7.83l4.59-4.59L11 5l-7 7 7 7 1.41-1.41L7.83 13H20v-2z"></path>
+            </svg>
+            Back to Home
+          </a>
+
+          <h1 class="title">Welcome Back</h1>
+          <p class="subtitle">Login to your account to continue</p>
+
+          <form id="loginForm" class="form" method="post" action="/admin/login">
+            <div class="group">
+              <label for="email" class="label">Email Address</label>
+              <input id="email" name="email" type="email" class="field" placeholder="name@example.com" required />
+            </div>
+
+            <div class="group">
+              <div class="row-label">
+                <label for="password" class="mb-0">Password</label>
+                <a class="forgot" href="#">Forgot password?</a>
+              </div>
+              <div class="password-wrap">
+                <input id="password" name="password" type="password" minlength="8" class="field" placeholder="Enter your password" required />
+                <button id="togglePassword" class="toggle" type="button" aria-label="Toggle password visibility">
+                  <svg class="eye-on" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5C6.6 5 2.4 8.5 1 12c1.4 3.5 5.6 7 11 7s9.6-3.5 11-7c-1.4-3.5-5.6-7-11-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"></path>
+                  </svg>
+                  <svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 7a5 5 0 0 1 5 5 4.9 4.9 0 0 1-.53 2.2l2.92 2.92A11.8 11.8 0 0 0 23 12s-4-7-11-7c-1.93 0-3.64.54-5.12 1.35l2.17 2.17A5 5 0 0 1 12 7zM2.71 3.86 1.39 5.18l2.18 2.18A12.4 12.4 0 0 0 1 12s4 7 11 7a10.8 10.8 0 0 0 6.08-1.77l2.74 2.74 1.32-1.32L2.71 3.86zM8.84 12a3.16 3.16 0 0 0 3.16 3.16c.44 0 .86-.09 1.24-.25L9.09 10.76c-.16.38-.25.8-.25 1.24z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="terms">
+              <input id="terms" type="checkbox" />
+              <label for="terms">I agree to the <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a></label>
+            </div>
+
+            <button class="login" type="submit">Login</button>
+            <div id="status" class="status"></div>
+          </form>
+
+          <div class="signup">Don't have an account? <a href="/admin/register">Sign up</a></div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">
+              <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 12C8 9.79086 9.79086 8 12 8H36C38.2091 8 40 9.79086 40 12V36C40 38.2091 38.2091 40 36 40H12C9.79086 40 8 38.2091 8 36V12Z" fill="currentColor"></path>
+                <path d="M16 16H32V20H16V16Z" fill="white"></path>
+                <path d="M16 24H32V28H16V24Z" fill="white"></path>
+                <path d="M16 32H24V36H16V32Z" fill="white"></path>
+              </svg>
+              BLOG LOGO
+            </div>
+            <div class="footer-muted">Blog Management Platform</div>
+          </div>
+
+          <div>
+            <h4 class="footer-head">COMPANY</h4>
+            <a class="footer-link" href="#">About Us</a>
+            <a class="footer-link" href="#">Careers</a>
+            <a class="footer-link" href="#">Press</a>
+          </div>
+
+          <div>
+            <h4 class="footer-head">SUPPORT</h4>
+            <a class="footer-link" href="#">Help Center</a>
+            <a class="footer-link" href="#">API Docs</a>
+            <a class="footer-link" href="#">Community</a>
+          </div>
+
+          <div>
+            <div class="social">
+              <a href="#" aria-label="Share">
+                <svg viewBox="0 0 24 24">
+                  <path d="M18 16a3 3 0 0 0-2.42 1.22l-6.6-3.3a3.1 3.1 0 0 0 0-1.84l6.6-3.3A3 3 0 1 0 15 7a3.1 3.1 0 0 0 .08.67l-6.6 3.3a3 3 0 1 0 0 2.06l6.6 3.3A3 3 0 1 0 18 16z"></path>
+                </svg>
+              </a>
+              <a href="#" aria-label="Forum">
+                <svg viewBox="0 0 24 24">
+                  <path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-2 11H6V11h12zm0-3H6V8h12zm0-3H6V5h12z"></path>
+                </svg>
+              </a>
+              <a href="#" aria-label="Email">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 4a8 8 0 1 0 5.29 14h-2.34A6 6 0 1 1 18 12v1a1 1 0 1 1-2 0V9h-1.5v.75A3.49 3.49 0 0 0 8.5 12a3.5 3.5 0 0 0 6 2.45A3 3 0 0 0 20 13v-1a8 8 0 0 0-8-8zm0 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="copyright">© 2026 Blog Management Platform. All rights reserved.</div>
+      </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      const passwordInput = document.getElementById("password");
+      const togglePasswordBtn = document.getElementById("togglePassword");
+
+      if (passwordInput && togglePasswordBtn) {
+        togglePasswordBtn.addEventListener("click", function () {
+          const isHidden = passwordInput.type === "password";
+          passwordInput.type = isHidden ? "text" : "password";
+          this.classList.toggle("is-visible", isHidden);
+          this.setAttribute(
+            "aria-label",
+            isHidden ? "Hide password" : "Show password"
+          );
+        });
+      }
+
+      $("#loginForm").on("submit", function (e) {
+        e.preventDefault();
+        $("#status").removeClass("text-danger text-success").text("Logging in...");
+
+        $.ajax({
+          url: "/admin/login",
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            email: $("#email").val().trim(),
+            password: $("#password").val()
+          })
+        })
+          .done(function (res) {
+            if (res.success) {
+              $("#status").addClass("text-success").text("Login successful");
+              window.location.href = "/admin/home";
+            } else {
+              $("#status").addClass("text-danger").text(res.error || "Login failed");
+            }
+          })
+          .fail(function (xhr) {
+            const msg = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "Login failed";
+            $("#status").addClass("text-danger").text(msg);
+          });
+      });
+    </script>
+    <script src="/sw-register.js"></script>
+  </body>
+</html>

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account - BlogAdmin</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #1f2b93;
+        --bg: #f3f5f9;
+        --card: #ffffff;
+        --text: #1b2e48;
+        --muted: #7084a0;
+        --line: #dce4ef;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Work Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .topbar {
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        padding: 10px 22px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary);
+        font-size: 24px;
+        font-weight: 800;
+      }
+
+      .brand svg {
+        width: 26px;
+        height: 26px;
+      }
+
+      .menu {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .menu a {
+        text-decoration: none;
+        color: #324762;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .menu button {
+        text-decoration: none;
+        color: #324762;
+        font-size: 14px;
+        font-weight: 600;
+        border: 0;
+        background: transparent;
+        padding: 0;
+      }
+
+      .menu a.active {
+        color: var(--primary);
+        border-bottom: 2px solid var(--primary);
+        padding-bottom: 6px;
+      }
+
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: #f1f4fa;
+        border: 1px solid #e2e8f2;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #243856;
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(140deg, #f6cb9b, #a6744f);
+        border: 1px solid #d9a780;
+      }
+
+      .page {
+        max-width: 1260px;
+        margin: 0 auto;
+        padding: 24px 20px 30px;
+      }
+
+      .cardx {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+
+      .profile-head {
+        padding: 18px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .head-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .hero-avatar {
+        width: 86px;
+        height: 86px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #e8c2a5, #8f5f3f);
+        border: 4px solid #fff;
+        box-shadow: 0 2px 8px rgba(25, 40, 75, 0.15);
+      }
+
+      .name-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .name {
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1;
+      }
+
+      .role-badge {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--primary);
+        background: #eef2f9;
+        border-radius: 999px;
+        padding: 3px 8px;
+        text-transform: uppercase;
+      }
+
+      .subtitle {
+        margin-top: 6px;
+        font-size: 16px;
+        color: #425b78;
+      }
+
+      .since {
+        margin-top: 4px;
+        font-size: 14px;
+        color: #8a9cb4;
+      }
+
+      .save-btn {
+        border: 0;
+        background: var(--primary);
+        color: #fff;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 10px 18px;
+        font-size: 15px;
+      }
+
+      .layout {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 14px;
+      }
+
+      .left-menu {
+        padding: 10px;
+      }
+
+      .left-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 10px;
+        border-radius: 10px;
+        color: #2f4766;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .left-item.active {
+        background: #f1f4fa;
+        color: var(--primary);
+      }
+
+      .left-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #8da0ba;
+      }
+
+      .left-item.active .left-dot {
+        background: var(--primary);
+      }
+
+      .right-col .cardx {
+        margin-bottom: 14px;
+        padding: 16px;
+      }
+
+      .section-title {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #edf2f8;
+      }
+
+      .field-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #334d6d;
+        margin-bottom: 6px;
+      }
+
+      .inputx,
+      .textareax {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        padding: 9px 11px;
+        font-size: 14px;
+        color: #304866;
+      }
+
+      .textareax {
+        min-height: 78px;
+        resize: vertical;
+      }
+
+      .verified {
+        display: inline-block;
+        margin-left: 8px;
+        font-size: 10px;
+        color: #1c8a45;
+        background: #e8f6ee;
+        border-radius: 999px;
+        padding: 2px 6px;
+        font-weight: 700;
+      }
+
+      .notif-table {
+        width: 100%;
+      }
+
+      .notif-table th,
+      .notif-table td {
+        font-size: 13px;
+        padding: 8px 4px;
+        border-top: 1px solid #edf2f8;
+      }
+
+      .notif-table th {
+        color: #7a8ea8;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        border-top: 0;
+      }
+
+      .timeline-item {
+        display: grid;
+        grid-template-columns: 16px 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--primary);
+        margin-top: 6px;
+      }
+
+      .dot.soft {
+        background: #b7c2d6;
+      }
+
+      .time-title {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .time-sub {
+        font-size: 12px;
+        color: #8094ae;
+      }
+
+      .footer {
+        margin-top: 14px;
+        border-top: 1px solid var(--line);
+        text-align: center;
+        padding: 16px;
+        color: #99aac0;
+        font-size: 12px;
+      }
+
+      .status {
+        margin-top: 8px;
+        font-size: 13px;
+      }
+
+      @media (max-width: 991.98px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .name {
+          font-size: 30px;
+        }
+
+        .section-title {
+          font-size: 28px;
+        }
+
+        .menu {
+          gap: 12px;
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="brand">
+          BlogAdmin
+        </div>
+
+        <nav class="menu">
+          <a href="/admin/home">Home</a>
+          <a href="/admin/posts/ui">Blog</a>
+          <a class="active" href="/admin/me/ui">About</a>
+          <a href="/admin/contact/ui">Contact</a>
+          <button id="logoutBtn" type="button">Logout</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="cardx profile-head">
+        <div class="head-left">
+          <div class="hero-avatar"></div>
+          <div>
+            <div class="name-row">
+              <div class="name" id="profileName">Loading...</div>
+              <span class="role-badge">Admin</span>
+            </div>
+            <div class="subtitle">Senior Editor &amp; Platform Manager</div>
+            <div class="since" id="memberSince">Member since --</div>
+          </div>
+        </div>
+        <div>
+          <button id="saveBtn" class="save-btn" type="button">Save Changes</button>
+          <div id="saveStatus" class="status"></div>
+        </div>
+      </section>
+
+      <div class="layout">
+        <aside class="cardx left-menu">
+          <div class="left-item active"><span class="left-dot"></span> Personal Info</div>
+          <div class="left-item"><span class="left-dot"></span> Security &amp; Access</div>
+          <div class="left-item"><span class="left-dot"></span> Notifications</div>
+          <div class="left-item"><span class="left-dot"></span> Recent Activity</div>
+        </aside>
+
+        <section class="right-col">
+          <div class="cardx">
+            <div class="section-title">Personal Information</div>
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <div class="field-label">Full Name</div>
+                <input id="fullName" class="inputx" type="text" />
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <div class="field-label">Email Address</div>
+                <div class="d-flex align-items-center">
+                  <input id="email" class="inputx" type="email" />
+                  <span class="verified">Verified</span>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <div class="field-label">Phone Number</div>
+                <input id="phone" class="inputx" type="text" value="+1 (555) 908-1234" />
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <div class="field-label">Public Role</div>
+                <input id="role" class="inputx" type="text" value="Senior Editor" />
+              </div>
+              <div class="col-12 mb-1">
+                <div class="field-label">Bio</div>
+                <textarea id="bio" class="textareax">Experienced content strategist and editor managing editorial workflows and platform governance.</textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="cardx">
+            <div class="section-title">Security &amp; Access</div>
+
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <div class="field-label">Current Password</div>
+                <input id="currentPassword" class="inputx" type="password" placeholder="Current password" />
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <div class="field-label">New Password</div>
+                <input id="newPassword" class="inputx" type="password" placeholder="Min. 8 characters" />
+              </div>
+            </div>
+          </div>
+
+          <div class="cardx">
+            <div class="section-title">Notification Preferences</div>
+            <table class="notif-table">
+              <thead>
+                <tr>
+                  <th>Event Type</th>
+                  <th>Email</th>
+                  <th>Push</th>
+                  <th>SMS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>New Comments</td>
+                  <td><input class="notif-pref" data-key="new_comments_email" type="checkbox" checked /></td>
+                  <td><input class="notif-pref" data-key="new_comments_push" type="checkbox" checked /></td>
+                  <td><input class="notif-pref" data-key="new_comments_sms" type="checkbox" /></td>
+                </tr>
+                <tr>
+                  <td>Post Published</td>
+                  <td><input class="notif-pref" data-key="post_published_email" type="checkbox" checked /></td>
+                  <td><input class="notif-pref" data-key="post_published_push" type="checkbox" /></td>
+                  <td><input class="notif-pref" data-key="post_published_sms" type="checkbox" /></td>
+                </tr>
+                <tr>
+                  <td>System Alerts</td>
+                  <td><input class="notif-pref" data-key="system_alerts_email" type="checkbox" checked /></td>
+                  <td><input class="notif-pref" data-key="system_alerts_push" type="checkbox" checked /></td>
+                  <td><input class="notif-pref" data-key="system_alerts_sms" type="checkbox" checked /></td>
+                </tr>
+                <tr>
+                  <td>Weekly Analytics</td>
+                  <td><input class="notif-pref" data-key="weekly_analytics_email" type="checkbox" checked /></td>
+                  <td><input class="notif-pref" data-key="weekly_analytics_push" type="checkbox" /></td>
+                  <td><input class="notif-pref" data-key="weekly_analytics_sms" type="checkbox" /></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="cardx">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="section-title mb-0 pb-0 border-0">Recent Activity</div>
+              <a href="#" style="font-size: 12px; font-weight: 700; color: var(--primary);">View All</a>
+            </div>
+            <div class="mt-3" id="activityList">
+              <div class="timeline-item">
+                <span class="dot"></span>
+                <div>
+                  <div class="time-title">Successfully logged in</div>
+                  <div class="time-sub">Chrome • --</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">© 2026 BlogAdmin Platform. All rights reserved.</footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      const escapeHtml = (value) =>
+        String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+
+      let currentAdminId = "";
+
+      const defaultPrefs = {
+        phone: "+1 (555) 908-1234",
+        role: "Senior Editor",
+        bio: "Experienced content strategist and editor with over 8 years in the digital publishing industry. Managing editorial workflows and platform governance.",
+        notifications: {
+          new_comments_email: true,
+          new_comments_push: true,
+          new_comments_sms: false,
+          post_published_email: true,
+          post_published_push: false,
+          post_published_sms: false,
+          system_alerts_email: true,
+          system_alerts_push: true,
+          system_alerts_sms: true,
+          weekly_analytics_email: true,
+          weekly_analytics_push: false,
+          weekly_analytics_sms: false
+        }
+      };
+
+      const prefsKey = (adminId) => `admin_me_prefs_${adminId}`;
+
+      function loadPrefs() {
+        if (!currentAdminId) return defaultPrefs;
+        try {
+          const raw = localStorage.getItem(prefsKey(currentAdminId));
+          if (!raw) return defaultPrefs;
+          const parsed = JSON.parse(raw);
+          return {
+            ...defaultPrefs,
+            ...parsed,
+            notifications: {
+              ...defaultPrefs.notifications,
+              ...(parsed.notifications || {})
+            }
+          };
+        } catch (err) {
+          return defaultPrefs;
+        }
+      }
+
+      function savePrefs() {
+        if (!currentAdminId) return;
+        const prefs = {
+          phone: $("#phone").val().trim(),
+          role: $("#role").val().trim(),
+          bio: $("#bio").val().trim(),
+          notifications: {}
+        };
+
+        $(".notif-pref").each(function () {
+          prefs.notifications[$(this).data("key")] = $(this).is(":checked");
+        });
+
+        localStorage.setItem(prefsKey(currentAdminId), JSON.stringify(prefs));
+      }
+
+      function applyPrefs(prefs) {
+        $("#phone").val(prefs.phone || "");
+        $("#role").val(prefs.role || "");
+        $("#bio").val(prefs.bio || "");
+
+        $(".notif-pref").each(function () {
+          const key = $(this).data("key");
+          $(this).prop("checked", !!prefs.notifications[key]);
+        });
+      }
+
+      function loadProfile() {
+        return $.get("/admin/me")
+          .done(function (res) {
+            if (!res.success) {
+              window.location.href = "/admin/login";
+              return;
+            }
+
+            const admin = res.data.admin;
+            currentAdminId = admin.id || admin._id || "";
+
+            $("#profileName").text(admin.name || "Admin");
+            $("#memberSince").text(
+              "Member since " + new Date(admin.createdAt).toLocaleDateString()
+            );
+            $("#fullName").val(admin.name || "");
+            $("#email").val(admin.email || "");
+
+            applyPrefs(loadPrefs());
+          })
+          .fail(function () {
+            window.location.href = "/admin/login";
+          });
+      }
+
+      function loadActivity() {
+        $.get("/admin/posts")
+          .done(function (res) {
+            if (!res.success) return;
+
+            const posts = (res.data || [])
+              .filter((post) => String(post.author) === String(currentAdminId))
+              .slice(0, 4);
+            const html = [];
+
+            html.push(
+              '<div class="timeline-item"><span class="dot"></span><div><div class="time-title">Successfully logged in</div><div class="time-sub">Current browser • ' +
+                new Date().toLocaleString() +
+                "</div></div></div>"
+            );
+
+            posts.forEach(function (post) {
+              html.push(
+                '<div class="timeline-item"><span class="dot soft"></span><div><div class="time-title">Published post #' +
+                  escapeHtml(post._id.slice(-4)) +
+                  " : " +
+                  escapeHtml(post.title) +
+                  '</div><div class="time-sub">Editorial Dashboard • ' +
+                  new Date(post.createdAt).toLocaleString() +
+                  "</div></div></div>"
+              );
+            });
+
+            $("#activityList").html(html.join(""));
+          })
+          .fail(function () {
+            $("#activityList").html(
+              '<div class="text-muted" style="font-size:13px;">Unable to load activity.</div>'
+            );
+          });
+      }
+
+      $(document).on("change", "#phone, #role, #bio, .notif-pref", function () {
+        savePrefs();
+      });
+
+      $("#saveBtn").on("click", function () {
+        const payload = {
+          name: $("#fullName").val().trim(),
+          email: $("#email").val().trim()
+        };
+
+        const currentPassword = $("#currentPassword").val();
+        const newPassword = $("#newPassword").val();
+        if (newPassword) {
+          payload.currentPassword = currentPassword;
+          payload.newPassword = newPassword;
+        }
+
+        $("#saveStatus").removeClass("text-danger text-success").text("Saving...");
+
+        $.ajax({
+          url: "/admin/me",
+          method: "PUT",
+          contentType: "application/json",
+          data: JSON.stringify(payload)
+        })
+          .done(function (res) {
+            if (!res.success) {
+              $("#saveStatus")
+                .addClass("text-danger")
+                .text(res.error || "Failed to save changes");
+              return;
+            }
+
+            const admin = res.data.admin || {};
+            $("#profileName").text(admin.name || "Admin");
+            $("#memberSince").text(
+              "Member since " + new Date(admin.createdAt).toLocaleDateString()
+            );
+            $("#fullName").val(admin.name || "");
+            $("#email").val(admin.email || "");
+            $("#currentPassword").val("");
+            $("#newPassword").val("");
+            savePrefs();
+            $("#saveStatus").addClass("text-success").text("Changes saved successfully");
+          })
+          .fail(function (xhr) {
+            const msg =
+              xhr.responseJSON && xhr.responseJSON.error
+                ? xhr.responseJSON.error
+                : "Failed to save changes";
+            $("#saveStatus").addClass("text-danger").text(msg);
+          });
+      });
+
+      $("#logoutBtn").on("click", function () {
+        $.post("/admin/logout").always(function () {
+          window.location.href = "/admin/login";
+        });
+      });
+
+      loadProfile().then(loadActivity);
+    </script>
+    <script src="/sw-register.js"></script>
+  </body>
+</html>

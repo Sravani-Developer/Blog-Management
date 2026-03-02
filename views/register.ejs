@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/platform-pages.css" />
+    <style>
+      .field-error {
+        display: none;
+        color: #b91c1c;
+        font-size: 13px;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body class="platform-body register-page">
+    <%- include("partials/public-header", { activePage: "register" }) %>
+
+    <main class="platform-main">
+      <div class="auth-card-wrap">
+        <div class="auth-card">
+          <div class="auth-content">
+            <h1 class="auth-title">Create your account</h1>
+            <p class="auth-subtitle">Join thousands of professionals today.</p>
+            <div id="error" class="auth-error" style="display:none;color:#b91c1c;margin-bottom:12px;"></div>
+            <form id="registerForm">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input class="form-control platform-input" id="name" name="name" placeholder="Jane Doe" required />
+                <div id="nameError" class="field-error"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input class="form-control platform-input" id="email" name="email" type="email" placeholder="name@company.com" required />
+                <div id="emailError" class="field-error"></div>
+              </div>
+              <div class="form-group input-password-wrap">
+                <label class="form-label">Password</label>
+                <input class="form-control platform-input input-with-right-icon" id="password" name="password" type="password" placeholder="........" minlength="8" required />
+                <button class="toggle-password" type="button" data-toggle-target="password">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <p class="input-note">Must be at least 8 characters long.</p>
+                <div id="passwordError" class="field-error"></div>
+              </div>
+              <div class="form-group input-password-wrap">
+                <label class="form-label">Confirm Password</label>
+                <input class="form-control platform-input input-with-right-icon" id="confirmPassword" type="password" placeholder="Confirm your password" minlength="8" required />
+                <button class="toggle-password" type="button" data-toggle-target="confirmPassword">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <div id="confirmPasswordError" class="field-error"></div>
+              </div>
+              <div class="platform-check">
+                <input type="checkbox" id="terms" required />
+                <label for="terms">
+                  By creating an account, I agree to the <a href="#" onclick="return false;">Terms of Service</a>
+                  and <a href="#" onclick="return false;">Privacy Policy</a>.
+                </label>
+              </div>
+              <button class="btn-platform" type="submit">Create Account</button>
+            </form>
+            <div class="auth-divider"></div>
+            <div class="platform-footer" style="margin-top:0;">
+              Already have an account? <a href="/login" style="color:#222a8d;font-weight:700;text-decoration:none;">Log in</a>
+            </div>
+          </div>
+        </div>
+        <div class="platform-footer">
+          &copy; 2026 Blog Platform Inc. &nbsp; • &nbsp;
+          <a href="#" onclick="return false;">Contact Support</a>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.querySelectorAll(".toggle-password").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = button.getAttribute("data-toggle-target");
+          const input = document.getElementById(target);
+          if (!input) return;
+          input.type = input.type === "password" ? "text" : "password";
+        });
+      });
+
+      document.getElementById("registerForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+        const termsAccepted = document.getElementById("terms").checked;
+        const box = document.getElementById("error");
+        const fieldErrors = {
+          name: document.getElementById("nameError"),
+          email: document.getElementById("emailError"),
+          password: document.getElementById("passwordError"),
+          confirmPassword: document.getElementById("confirmPasswordError")
+        };
+
+        Object.values(fieldErrors).forEach((el) => {
+          el.style.display = "none";
+          el.textContent = "";
+        });
+        box.style.display = "none";
+
+        if (password !== confirmPassword) {
+          box.style.display = "block";
+          box.textContent = "Password and confirm password must match";
+          fieldErrors.confirmPassword.style.display = "block";
+          fieldErrors.confirmPassword.textContent = "Password and confirm password must match";
+          return;
+        }
+        if (!termsAccepted) {
+          box.style.display = "block";
+          box.textContent = "Please accept terms to continue";
+          return;
+        }
+
+        const formData = new FormData(e.target);
+        const payload = Object.fromEntries(formData.entries());
+        const res = await fetch("/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const body = await res.json();
+        if (!res.ok) {
+          if (body.details && typeof body.details === "object") {
+            Object.keys(body.details).forEach((field) => {
+              if (!fieldErrors[field]) return;
+              fieldErrors[field].style.display = "block";
+              fieldErrors[field].textContent = body.details[field];
+            });
+          }
+          box.style.display = "block";
+          box.textContent = body.error || "Registration failed";
+          return;
+        }
+        window.location.href = "/me/posts";
+      });
+    </script>
+  </body>
+</html>

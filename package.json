@@ -1,0 +1,43 @@
+{
+  "name": "blog-management-backend",
+  "version": "0.1.0",
+  "description": "Backend-first Blog Management Platform (Sprint 0)",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
+    "sass:build": "sass src/styles/platform-pages.scss public/css/platform-pages.css --no-source-map",
+    "sass:watch": "sass --watch src/styles/platform-pages.scss:public/css/platform-pages.css"
+  },
+  "keywords": [
+    "blog",
+    "management",
+    "backend",
+    "express",
+    "mongoose"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.7.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^4.0.1",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "helmet": "^7.1.0",
+    "mongoose": "^8.10.0",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.2",
+    "validator": "^13.12.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "mongodb-memory-server": "^11.0.1",
+    "nodemon": "^3.1.0",
+    "sass": "^1.89.2",
+    "supertest": "^6.3.4"
+  }
+}

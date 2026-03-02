@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= mode === "create" ? "Create User" : "Edit User" %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f4f6fb;
+        --surface: #ffffff;
+        --line: #dbe2ef;
+        --line-soft: #edf2fa;
+        --text: #0f1830;
+        --muted: #607593;
+        --brand: #232d91;
+        --danger: #ef4444;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: "Work Sans", sans-serif; background: var(--bg); color: var(--text); }
+
+      /* Header compatibility (reusable admin header styles) */
+      .topbar { background: #fff; border-bottom: 1px solid var(--line); }
+      .topbar-inner { max-width: 1340px; margin: 0 auto; padding: 14px 18px; display: flex; align-items: center; gap: 16px; }
+      .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 800; font-size: 20px; }
+      .brand .logo { color: var(--brand); display: inline-flex; }
+      .admin-nav { margin-left: auto; display: flex; align-items: center; gap: 20px; }
+      .admin-nav a { color: #2b4062; text-decoration: none; font-size: 15px; font-weight: 500; }
+      .admin-nav a.active { color: var(--brand); font-weight: 700; border-bottom: 2px solid var(--brand); padding-bottom: 8px; }
+      .menu { position: relative; }
+      .menu-btn { border: 0; background: transparent; color: #2b4062; font-size: 15px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+      .menu-list { display: none; position: absolute; right: 0; top: 28px; width: 190px; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 14px 28px rgba(15, 24, 48, 0.12); padding: 6px 0; z-index: 40; }
+      .menu-list.open { display: block; }
+      .menu-list a, .menu-list button { display: block; width: 100%; background: transparent; border: 0; text-align: left; padding: 10px 12px; color: #304766; font-size: 14px; cursor: pointer; }
+      .menu-list a:hover, .menu-list button:hover { background: #f2f5fc; color: var(--brand); }
+      .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+
+      .wrap { max-width: 940px; margin: 0 auto; padding: 34px 18px 42px; }
+      .crumb { display: inline-flex; align-items: center; gap: 8px; color: #6f85a6; font-size: 14px; margin-bottom: 12px; }
+      .crumb .material-symbols-outlined { font-size: 16px; }
+      .crumb a { color: inherit; text-decoration: none; }
+      .page-title { margin: 0; font-size: 28px; line-height: 1.15; font-weight: 800; }
+      .page-sub { margin: 10px 0 26px; color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+      .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 0 rgba(15, 24, 48, 0.02); }
+      .card-body { padding: 24px; }
+      .section + .section { margin-top: 22px; }
+      .section-head { padding-bottom: 12px; border-bottom: 1px solid var(--line-soft); margin-bottom: 18px; }
+      .section-title { margin: 0; font-size: 16px; font-weight: 800; }
+      .section-sub { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+
+      .alert {
+        display: none;
+        margin-bottom: 14px;
+        background: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 14px;
+      }
+      .alert.ok {
+        background: #dcfce7;
+        border-color: #bbf7d0;
+        color: #166534;
+      }
+
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; }
+      .field { min-width: 0; }
+      label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 700; color: #1f3350; }
+      .field-error { display: none; color: #b91c1c; font-size: 13px; margin-top: 6px; }
+      input, select {
+        width: 100%;
+        height: 46px;
+        border: 1px solid #c8d2e3;
+        border-radius: 10px;
+        background: #fbfcff;
+        padding: 0 13px;
+        font-size: 15px;
+        color: #263b5b;
+        outline: none;
+      }
+      input:focus, select:focus { border-color: #aebee0; box-shadow: 0 0 0 3px rgba(35, 45, 145, 0.08); }
+      .select-wrap { position: relative; }
+      .select-wrap select { appearance: none; padding-right: 40px; }
+      .select-wrap .material-symbols-outlined {
+        position: absolute; right: 12px; top: 12px; font-size: 20px; color: #7f92af; pointer-events: none;
+      }
+
+      .status-box {
+        height: 46px;
+        display: flex;
+        align-items: center;
+      }
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: #dcfce7;
+        color: #15803d;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+      .security-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+      .hint-box {
+        min-height: 80px;
+        border: 1px solid #d8dfec;
+        background: #f7f9fe;
+        border-radius: 10px;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 14px;
+        color: #536986;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .hint-box .material-symbols-outlined { color: var(--brand); font-size: 20px; margin-top: 1px; }
+      .small { color: #7388a8; font-size: 12px; margin-top: 7px; }
+
+      .footer-actions {
+        margin-top: 20px;
+        padding-top: 18px;
+        border-top: 1px solid var(--line-soft);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+      .danger-action {
+        border: 0;
+        background: transparent;
+        color: var(--danger);
+        font-weight: 700;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 0;
+      }
+      .danger-action[disabled] { opacity: 0.45; cursor: not-allowed; }
+      .btns { display: flex; gap: 10px; }
+      .btn {
+        height: 44px;
+        min-width: 104px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        padding: 0 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .btn-ghost { background: #fff; border-color: #cdd7e8; color: #31486a; }
+      .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 10px 18px rgba(35, 45, 145, 0.18); }
+
+      .stats-row { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .stat-card { background: #eef3fb; border: 1px solid #e3ebf7; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 10px; }
+      .stat-card .material-symbols-outlined { color: var(--brand); font-size: 20px; }
+      .stat-label { color: #607593; font-size: 13px; }
+      .stat-value { color: #111c36; font-size: 15px; font-weight: 700; margin-top: 2px; }
+
+      @media (max-width: 900px) {
+        .wrap { max-width: 100%; }
+        .grid, .security-grid, .stats-row { grid-template-columns: 1fr; }
+        .footer-actions { flex-direction: column; align-items: stretch; }
+        .btns { justify-content: stretch; }
+        .btn { flex: 1; }
+      }
+    </style>
+  </head>
+  <body>
+    <%- include("partials/admin-header", { activeAdminPage: "users", currentUser }) %>
+
+    <main class="wrap">
+      <div class="crumb">
+        <span class="material-symbols-outlined">group</span>
+        <a href="/admin/users">Users</a>
+        <span>&rsaquo;</span>
+        <span><%= mode === "create" ? "Create User" : "Edit User" %></span>
+      </div>
+
+      <h1 class="page-title"><%= mode === "create" ? "Create User Profile" : "Edit User Profile" %></h1>
+      <p class="page-sub">
+        <%= mode === "create"
+          ? "Create a new user account with role permissions and optional password setup."
+          : "Update account details, role permissions, and security settings." %>
+      </p>
+
+      <section class="card">
+        <div class="card-body">
+          <% if (error) { %>
+            <div class="alert" style="display:block;"><%= error %></div>
+          <% } %>
+          <div id="msg" class="alert"></div>
+
+          <form id="userForm">
+            <div class="section">
+              <div class="section-head">
+                <h2 class="section-title">Account Details</h2>
+              </div>
+
+              <div class="grid">
+                <div class="field">
+                  <label for="name">Full Name</label>
+                  <input id="name" name="name" required value="<%= user ? user.name : '' %>" />
+                  <div id="nameError" class="field-error"></div>
+                </div>
+
+                <div class="field">
+                  <label for="email">Email Address</label>
+                  <input id="email" name="email" type="email" required value="<%= user ? user.email : '' %>" />
+                  <div id="emailError" class="field-error"></div>
+                </div>
+
+                <div class="field">
+                  <label for="role">User Role</label>
+                  <div class="select-wrap">
+                    <select id="role" name="role" required>
+                      <option value="user" <%= user && user.role === "user" ? "selected" : "" %>>User</option>
+                      <option value="admin" <%= user && user.role === "admin" ? "selected" : "" %>>Administrator</option>
+                    </select>
+                    <span class="material-symbols-outlined">expand_more</span>
+                  </div>
+                  <div id="roleError" class="field-error"></div>
+                </div>
+
+                <div class="field">
+                  <label>Account Status</label>
+                  <div class="status-box">
+                    <span class="status-pill"><span class="status-dot"></span> Active</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-head">
+                <h2 class="section-title">Security</h2>
+                <p class="section-sub">
+                  <%= mode === "create"
+                    ? "Set the initial password for this user account."
+                    : "Leave blank if you don't want to change the password." %>
+                </p>
+              </div>
+
+              <div class="security-grid">
+                <div class="field">
+                  <label for="password"><%= mode === "create" ? "Password" : "New Password" %></label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    <%= mode === "create" ? "required" : "" %>
+                    minlength="8"
+                    placeholder="<%= mode === 'create' ? 'Minimum 8 characters' : 'Leave blank to keep current password' %>"
+                  />
+                  <div class="small">Minimum 8 characters.</div>
+                  <div id="passwordError" class="field-error"></div>
+                </div>
+
+                <div class="hint-box">
+                  <span class="material-symbols-outlined">info</span>
+                  <div>
+                    Use at least 8 characters with a mix of letters, numbers, and symbols.
+                    Password is stored as a secure hash in the database.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="footer-actions">
+              <button class="danger-action" type="button" disabled title="Use Delete from user list to remove users">
+                <span class="material-symbols-outlined" style="font-size:18px;">block</span>
+                Deactivate Account
+              </button>
+
+              <div class="btns">
+                <a class="btn btn-ghost" href="/admin/users">Cancel</a>
+                <button class="btn btn-primary" type="submit">
+                  <span class="material-symbols-outlined" style="font-size:18px;">check_circle</span>
+                  <%= mode === "create" ? "Create User" : "Save Changes" %>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="stats-row" aria-label="User metadata">
+        <div class="stat-card">
+          <span class="material-symbols-outlined">schedule</span>
+          <div>
+            <div class="stat-label">Last Login</div>
+            <div class="stat-value">Not tracked</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <div>
+            <div class="stat-label">Joined On</div>
+            <div class="stat-value">
+              <%= user && user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Will be set on create" %>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="material-symbols-outlined">shield</span>
+          <div>
+            <div class="stat-label">Permissions</div>
+            <div class="stat-value"><%= user && user.role === "admin" ? "Full Access" : "User Access" %></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        var form = document.getElementById("userForm");
+        var msgBox = document.getElementById("msg");
+        var fieldErrors = {
+          name: document.getElementById("nameError"),
+          email: document.getElementById("emailError"),
+          role: document.getElementById("roleError"),
+          password: document.getElementById("passwordError")
+        };
+        if (!form) return;
+
+        function clearFieldErrors() {
+          Object.keys(fieldErrors).forEach(function (key) {
+            fieldErrors[key].style.display = "none";
+            fieldErrors[key].textContent = "";
+          });
+        }
+
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          msgBox.style.display = "none";
+          clearFieldErrors();
+
+          var isCreate = "<%= mode %>" === "create";
+          var url = "<%= submitUrl || '' %>";
+          var method = isCreate ? "POST" : "PUT";
+          var payload = {
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            role: document.getElementById("role").value,
+            password: document.getElementById("password").value
+          };
+
+          try {
+            var res = await fetch(url, {
+              method: method,
+              headers: { "Content-Type": "application/json", "Accept": "application/json" },
+              credentials: "same-origin",
+              body: JSON.stringify(payload)
+            });
+
+            if (res.status === 401) {
+              window.location.href = "/";
+              return;
+            }
+
+            var body = await res.json().catch(function () { return {}; });
+            if (!res.ok) {
+              if (body.details && typeof body.details === "object") {
+                Object.keys(body.details).forEach(function (field) {
+                  if (!fieldErrors[field]) return;
+                  fieldErrors[field].style.display = "block";
+                  fieldErrors[field].textContent = body.details[field];
+                });
+              }
+              msgBox.className = "alert";
+              msgBox.style.display = "block";
+              msgBox.textContent = body.error || "Request failed";
+              return;
+            }
+
+            window.location.href = "<%= successRedirect || '/admin/users' %>";
+          } catch (err) {
+            msgBox.className = "alert";
+            msgBox.style.display = "block";
+            msgBox.textContent = "Network error. Please try again.";
+          }
+        });
+      })();
+    </script>
+    <script src="/js/auth-header.js"></script>
+  </body>
+</html>

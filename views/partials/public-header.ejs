@@ -1,0 +1,22 @@
+<%
+  const page = activePage || "";
+%>
+<header class="platform-header">
+  <div class="platform-header-inner">
+    <a class="platform-brand" href="/">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M4 4h8v8H4zM12 12h8v8h-8zM4 14h6v6H4zM14 4h6v6h-6z"></path>
+      </svg>
+      <span>Blog Platform</span>
+    </a>
+
+    <nav class="platform-nav">
+      <a href="/about">About</a>
+      <a href="/contact">Help</a>
+      <% if (page === "register") { %>
+      <span class="register-sep"></span>
+      <a class="platform-nav-active" href="/login">Login</a>
+      <% } %>
+    </nav>
+  </div>
+</header>

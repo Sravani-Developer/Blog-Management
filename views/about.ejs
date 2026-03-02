@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About - Blog Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f4f6fb;
+        --surface: #ffffff;
+        --line: #dbe2ef;
+        --text: #0f1830;
+        --muted: #5f7392;
+        --brand: #232d91;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: "Work Sans", sans-serif; background: var(--bg); color: var(--text); }
+
+      .platform-header { background: #fff; border-bottom: 1px solid var(--line); }
+      .platform-header-inner { max-width: 1340px; margin: 0 auto; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .platform-brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 800; font-size: 20px; }
+      .platform-brand svg { color: var(--brand); }
+      .platform-nav { display: inline-flex; align-items: center; gap: 16px; }
+      .platform-nav a { color: #283d61; text-decoration: none; font-weight: 500; font-size: 15px; }
+      .platform-nav-active { color: var(--brand) !important; font-weight: 700 !important; }
+
+      .topbar { background: #fff; border-bottom: 1px solid var(--line); }
+      .topbar-inner { max-width: 1340px; margin: 0 auto; padding: 14px 18px; display: flex; align-items: center; gap: 16px; }
+      .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 800; font-size: 20px; }
+      .brand .logo { color: var(--brand); display: inline-flex; }
+      .nav, .admin-nav { margin-left: auto; display: flex; align-items: center; gap: 22px; }
+      .nav a, .admin-nav a { text-decoration: none; color: #283d61; font-weight: 500; font-size: 15px; }
+      .nav a.active, .admin-nav a.active { color: var(--brand); border-bottom: 2px solid var(--brand); padding-bottom: 8px; font-weight: 700; }
+      .menu { position: relative; }
+      .menu-btn { border: 0; background: transparent; color: #283d61; font-weight: 500; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+      .menu-list { display: none; position: absolute; right: 0; top: 26px; width: 170px; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 12px 24px rgba(16,24,40,.12); padding: 6px 0; z-index: 40; }
+      .menu-list.open { display: block; }
+      .menu-list a, .menu-list button { display: block; width: 100%; border: 0; background: transparent; text-align: left; padding: 9px 12px; color: #2d4366; font-size: 14px; cursor: pointer; }
+      .menu-list a:hover, .menu-list button:hover { background: #f3f6fd; color: var(--brand); }
+      .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+
+      .container { max-width: 1340px; margin: 0 auto; padding: 26px 18px 0; }
+      .hero { text-align: center; padding: 28px 0 34px; }
+      .hero h1 { margin: 0 auto; max-width: 720px; font-size: 54px; line-height: 1.05; font-weight: 800; }
+      .hero p { margin: 18px auto 0; max-width: 680px; color: var(--muted); font-size: 18px; line-height: 1.6; }
+
+      .hero-image {
+        margin-top: 18px;
+        width: 100%;
+        height: 420px;
+        border-radius: 14px;
+        border: 1px solid #d8dfec;
+        background:
+          linear-gradient(180deg, rgba(18,24,40,.08), rgba(18,24,40,.08)),
+          url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+        box-shadow: 0 18px 38px rgba(16,24,40,.08);
+      }
+
+      .story-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 24px; margin: 34px 0; }
+      .story h2 { margin: 0 0 14px; font-size: 34px; font-weight: 800; color: var(--brand); }
+      .story p { margin: 0 0 14px; color: #334a6e; font-size: 16px; line-height: 1.85; }
+      .mission {
+        background: #f7f9fe;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 22px;
+      }
+      .mission h3 { margin: 0 0 12px; color: var(--brand); font-size: 22px; font-weight: 800; }
+      .mission blockquote { margin: 0; color: #243c62; font-style: italic; line-height: 1.85; font-size: 16px; }
+
+      .values-wrap {
+        margin: 24px -18px 0;
+        padding: 42px 18px;
+        background: rgba(255,255,255,.55);
+        border-top: 1px solid #e7ecf5;
+      }
+      .values-head { text-align: center; margin-bottom: 24px; }
+      .values-head h2 { margin: 0; font-size: 34px; font-weight: 800; }
+      .values-head p { margin: 8px 0 0; color: var(--muted); }
+      .values-grid { max-width: 1340px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+      .value-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+      .value-card .material-symbols-outlined { color: var(--brand); margin-bottom: 10px; }
+      .value-card h4 { margin: 0 0 10px; font-size: 18px; font-weight: 700; }
+      .value-card p { margin: 0; color: #5f7392; font-size: 14px; line-height: 1.6; }
+
+      .cta {
+        margin: 0 -18px;
+        background: var(--brand);
+        color: #fff;
+        padding: 44px 18px;
+        text-align: center;
+      }
+      .cta h3 { margin: 0; font-size: 38px; font-weight: 800; }
+      .cta .pill { margin: 12px auto 20px; display: inline-block; padding: 8px 14px; border-radius: 8px; background: rgba(255,255,255,.14); color: #e2e8ff; font-size: 13px; }
+      .cta-actions { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+      .footer { background: #fff; border-top: 1px solid var(--line); padding: 28px 18px 16px; }
+      .footer-inner { max-width: 1340px; margin: 0 auto; }
+      .footer-grid { display: grid; grid-template-columns: 1.2fr repeat(3,1fr); gap: 20px; padding-bottom: 20px; border-bottom: 1px solid #edf1f8; }
+      .f-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; color: var(--text); text-decoration: none; }
+      .f-brand svg { color: var(--brand); }
+      .footer h5 { margin: 0 0 10px; font-size: 14px; font-weight: 700; }
+      .footer p, .footer a { color: #6b7f9e; font-size: 14px; text-decoration: none; line-height: 1.7; }
+      .copy { text-align: center; color: #8da0bb; font-size: 12px; padding-top: 12px; }
+
+      @media (max-width: 1024px) {
+        .hero h1 { font-size: 42px; }
+        .story-grid, .values-grid, .footer-grid { grid-template-columns: 1fr; }
+        .hero-image { height: 320px; }
+      }
+      @media (max-width: 640px) {
+        .hero h1 { font-size: 32px; }
+        .cta h3 { font-size: 28px; }
+      }
+    </style>
+  </head>
+  <body>
+    <% if (currentUser && currentUser.role === "admin") { %>
+      <%- include("partials/admin-header", { activeAdminPage: "" }) %>
+    <% } else if (currentUser) { %>
+      <%- include("partials/auth-header", { activePage: "", navClass: "nav", showSearch: false }) %>
+    <% } else { %>
+      <%- include("partials/public-header", { activePage: "" }) %>
+    <% } %>
+
+    <main class="container">
+      <section class="hero">
+        <h1>Empowering the next generation of digital storytellers.</h1>
+        <p>
+          We are building the tools that professional publishers need to reach their audience,
+          streamline their workflows, and grow their impact in a noisy digital world.
+        </p>
+      </section>
+
+      <div class="hero-image" aria-hidden="true"></div>
+
+      <section class="story-grid">
+        <div class="story">
+          <h2>Our Story</h2>
+          <p>
+            Founded with a vision to streamline editorial workflows, our platform was built to solve the
+            friction points faced by professional publishers. We realized that while the web had evolved,
+            the tools for managing high-volume editorial content had remained stagnant.
+          </p>
+          <p>
+            What started as a small internal tool for a boutique agency quickly grew into a comprehensive
+            platform used by thousands of creators worldwide. We believe in the power of words and the
+            technology that carries them.
+          </p>
+        </div>
+        <aside class="mission">
+          <h3>Our Mission</h3>
+          <blockquote>
+            "To democratize professional-grade publishing tools, enabling every storyteller to build,
+            manage, and scale their digital legacy without technical barriers."
+          </blockquote>
+        </aside>
+      </section>
+    </main>
+
+    <section class="values-wrap">
+      <div class="values-head">
+        <h2>Core Values</h2>
+        <p>The principles that guide every decision we make.</p>
+      </div>
+      <div class="values-grid">
+        <article class="value-card">
+          <span class="material-symbols-outlined">visibility</span>
+          <h4>Transparency</h4>
+          <p>We believe in open communication with users and within our team. No hidden agendas.</p>
+        </article>
+        <article class="value-card">
+          <span class="material-symbols-outlined">lightbulb</span>
+          <h4>Innovation</h4>
+          <p>We constantly push boundaries of what is possible in digital content management.</p>
+        </article>
+        <article class="value-card">
+          <span class="material-symbols-outlined">person</span>
+          <h4>User-Centricity</h4>
+          <p>Our roadmap is built on user feedback. We exist to solve your publishing challenges.</p>
+        </article>
+        <article class="value-card">
+          <span class="material-symbols-outlined">trending_up</span>
+          <h4>Scalability</h4>
+          <p>Whether you are a solo blogger or a global newsroom, our tech grows with you.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta">
+      <h3>Ready to transform your editorial workflow?</h3>
+      <div class="pill">Join 50,000+ storytellers already using Blog Platform.</div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-grid">
+          <div>
+            <a class="f-brand" href="/">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h8v8H4zM12 12h8v8h-8zM4 14h6v6H4zM14 4h6v6h-6z"/></svg>
+              <span>Blog Platform</span>
+            </a>
+            <p style="margin-top:10px;">Empowering digital storytellers everywhere.</p>
+          </div>
+          <div>
+            <h5>Company</h5>
+            <a href="/about">About</a><br />
+            <a href="/contact">Contact</a>
+          </div>
+          <div>
+            <h5>Legal</h5>
+            <a href="/about">Privacy</a><br />
+            <a href="/about">Terms</a>
+          </div>
+          <div>
+            <h5>Social</h5>
+            <a href="#">Share</a><br />
+            <a href="#">RSS</a>
+          </div>
+        </div>
+        <div class="copy">© 2026 Blog Platform Inc. All rights reserved.</div>
+      </div>
+    </footer>
+
+    <% if (currentUser) { %><script src="/js/auth-header.js"></script><% } %>
+  </body>
+</html>

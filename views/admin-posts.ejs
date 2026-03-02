@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Posts Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="manifest" href="/manifest.json" />
+    <style>
+      :root {
+        --bg: #f4f6fb;
+        --surface: #ffffff;
+        --line: #dbe2ef;
+        --text: #0f1830;
+        --muted: #5f7392;
+        --brand: #232d91;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: "Work Sans", sans-serif; background: var(--bg); color: var(--text); }
+
+      .topbar { background: #fff; border-bottom: 1px solid var(--line); }
+      .topbar-inner { max-width: 1340px; margin: 0 auto; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+      .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-size: 20px; font-weight: 800; }
+      .brand .logo { color: var(--brand); display: inline-flex; }
+      .admin-nav { display: flex; align-items: center; gap: 22px; margin-left: auto; }
+      .admin-nav a { color: #283d61; text-decoration: none; font-weight: 500; font-size: 15px; }
+      .admin-nav a.active { color: var(--brand); border-bottom: 2px solid var(--brand); padding-bottom: 8px; font-weight: 700; }
+      .menu { position: relative; }
+      .menu-btn { border: 0; background: transparent; color: #283d61; font-weight: 500; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+      .menu-list { display: none; position: absolute; right: 0; top: 30px; width: 190px; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 12px 24px rgba(16, 24, 40, 0.12); padding: 6px 0; z-index: 40; }
+      .menu-list.open { display: block; }
+      .menu-list a, .menu-list button { display: block; width: 100%; border: 0; background: transparent; text-align: left; padding: 9px 12px; color: #2d4366; font-size: 14px; cursor: pointer; }
+      .menu-list a:hover, .menu-list button:hover { background: #f3f6fd; color: var(--brand); }
+      .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--brand); color: #fff; font-size: 16px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+
+      .main { max-width: 1340px; margin: 0 auto; padding: 28px 18px 48px; }
+      .crumb { color: #7388a8; font-size: 17px; margin-bottom: 10px; }
+      .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+      .head h1 { margin: 0; font-size: 44px; line-height: 1.08; font-weight: 800; }
+      .head p { margin: 8px 0 0; font-size: 20px; color: var(--muted); line-height: 1.35; }
+      .create-btn { margin-top: 6px; background: var(--brand); color: #fff; text-decoration: none; border-radius: 12px; height: 54px; padding: 0 24px; display: inline-flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 700; box-shadow: 0 8px 18px rgba(35, 45, 145, 0.24); }
+
+      .filters { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; margin-bottom: 18px; }
+      .search { position: relative; }
+      .search input { width: 100%; height: 54px; border: 1px solid var(--line); background: #f6f8fd; border-radius: 10px; padding: 0 14px 0 44px; font-size: 18px; }
+      .search .material-symbols-outlined { position: absolute; left: 12px; top: 12px; color: #7f92af; }
+      .filter-btn { border: 1px solid var(--line); background: #fff; border-radius: 10px; height: 54px; padding: 0 14px; font-size: 16px; color: #334a6e; display: inline-flex; align-items: center; gap: 4px; }
+
+      .table-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+      table { width: 100%; border-collapse: collapse; }
+      thead th { text-align: left; padding: 16px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #4a5f7f; border-bottom: 1px solid var(--line); }
+      tbody td { padding: 14px 16px; border-bottom: 1px solid #e8edf6; font-size: 16px; color: #1f324f; }
+      .title-main { font-weight: 700; margin-bottom: 3px; font-size: 16px; }
+      .title-sub { color: #6e83a1; font-size: 14px; }
+      .author { display: flex; align-items: center; gap: 10px; }
+      .author-dot { width: 30px; height: 30px; border-radius: 50%; background: #dbe2ef; display: inline-block; }
+      .badge { display: inline-block; border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 600; }
+      .badge.published { background: #dff7ea; color: #166534; }
+      .badge.draft { background: #fdf3de; color: #9a5400; }
+      .toggle { width: 56px; height: 30px; border-radius: 999px; border: 1px solid #b9c6db; background: #dfe7f3; position: relative; cursor: pointer; }
+      .toggle.on { background: var(--brand); border-color: var(--brand); }
+      .toggle::after { content: ""; width: 24px; height: 24px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: all .2s ease; }
+      .toggle.on::after { left: 29px; }
+      .actions { display: inline-flex; align-items: center; gap: 8px; }
+      .inline-form { display: inline-flex; margin: 0; }
+      .icon-btn { border: 0; background: transparent; color: #8091ad; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+      .icon-btn:hover { color: var(--brand); }
+
+      .foot { padding: 16px; display: flex; align-items: center; justify-content: space-between; color: #5d7191; font-size: 14px; }
+      .pagination { display: flex; gap: 8px; }
+      .page { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 10px; display: grid; place-items: center; color: #304667; font-size: 14px; text-decoration: none; background: #fff; }
+      .page.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+      .stats { margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 10px; }
+      .icon { width: 50px; height: 50px; border-radius: 10px; display: grid; place-items: center; font-size: 24px; }
+      .icon.posts { background: #eef0fc; color: #2a3198; }
+      .icon.views { background: #e8f8ef; color: #15803d; }
+      .icon.featured { background: #efeafd; color: #5b21b6; }
+      .stat label { display: block; color: #5d7191; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+      .stat strong { font-size: 18px; }
+
+      @media (max-width: 1024px) {
+        .filters { grid-template-columns: 1fr; }
+        .stats { grid-template-columns: 1fr; }
+        .head { flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <%- include("partials/admin-header", { activeAdminPage: "posts" }) %>
+
+    <main class="main">
+      <%
+        const pager = pagination || { page: 1, limit: posts.length || 10, total: posts.length, totalPages: 1 };
+        const startRow = pager.total === 0 ? 0 : ((pager.page - 1) * pager.limit) + 1;
+        const endRow = Math.min(pager.page * pager.limit, pager.total);
+      %>
+      <div class="crumb"><a href="/admin/dashboard" style="color:#7388a8;text-decoration:none;">Home</a>  ›  Posts Management</div>
+      <div class="head">
+        <div>
+          <h1>Posts Management</h1>
+          <p>Manage, moderate, and organize all blog content on the platform.</p>
+        </div>
+        <a class="create-btn" href="/me/posts/new"><span class="material-symbols-outlined">add</span> Create New Post</a>
+      </div>
+
+      <section class="filters">
+        <div class="search">
+          <span class="material-symbols-outlined">search</span>
+          <input id="searchInput" type="text" placeholder="Search posts by title, author or keyword..." />
+        </div>
+        <button class="filter-btn" type="button">All Status <span class="material-symbols-outlined" style="font-size:18px;">expand_more</span></button>
+        <button class="filter-btn" type="button">All Categories <span class="material-symbols-outlined" style="font-size:18px;">expand_more</span></button>
+        <button class="filter-btn" type="button"><span class="material-symbols-outlined">tune</span></button>
+      </section>
+
+      <section class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Status</th>
+              <th>Featured</th>
+              <th>Views</th>
+              <th>Created</th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="postsTableBody">
+            <% posts.forEach(function(post) { %>
+            <tr>
+              <td>
+                <div class="title-main"><%= post.title %></div>
+                <div class="title-sub">Post · <%= Math.max(1, Math.ceil((post.content || '').split(/\s+/).length / 220)) %> min read</div>
+              </td>
+              <td>
+                <div class="author">
+                  <span class="author-dot"></span>
+                  <span><%= post.author ? post.author.name : "Unknown" %></span>
+                </div>
+              </td>
+              <td>
+                <span class="badge <%= post.isFeatured ? 'published' : 'draft' %>"><%= post.isFeatured ? "Published" : "Draft" %></span>
+              </td>
+              <td>
+                <button class="toggle <%= post.isFeatured ? 'on' : '' %>" type="button" onclick="toggleFeature('<%= post._id %>')" title="Toggle featured"></button>
+              </td>
+              <td><%= (post.viewCount || 0).toLocaleString() %></td>
+              <td><%= new Date(post.createdAt).toLocaleDateString() %></td>
+              <td style="text-align:right;">
+                <div class="actions">
+                  <a class="icon-btn" href="/posts/<%= post._id %>" title="View"><span class="material-symbols-outlined">visibility</span></a>
+                  <a class="icon-btn" href="/admin/posts/<%= post._id %>/edit" title="Edit"><span class="material-symbols-outlined">edit</span></a>
+                  <form class="inline-form" method="post" action="/admin/posts/<%= post._id %>/delete" onsubmit="return confirm('Delete this post?');">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <button class="icon-btn" type="submit" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            <% }); %>
+            <% if (!posts.length) { %>
+            <tr><td colspan="7">No posts found.</td></tr>
+            <% } %>
+          </tbody>
+        </table>
+        <div class="foot">
+          <div>Showing <strong><%= startRow %> to <%= endRow %></strong> of <strong><%= pager.total %></strong> results</div>
+          <div class="pagination">
+            <% if (pager.page > 1) { %>
+            <a class="page" href="/admin/posts?page=<%= pager.page - 1 %>&limit=<%= pager.limit %>">‹</a>
+            <% } %>
+            <% for (let p = 1; p <= pager.totalPages; p++) { if (p > 5 && Math.abs(p - pager.page) > 1) continue; %>
+            <a class="page <%= p === pager.page ? 'active' : '' %>" href="/admin/posts?page=<%= p %>&limit=<%= pager.limit %>"><%= p %></a>
+            <% } %>
+            <% if (pager.page < pager.totalPages) { %>
+            <a class="page" href="/admin/posts?page=<%= pager.page + 1 %>&limit=<%= pager.limit %>">›</a>
+            <% } %>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats">
+        <article class="stat">
+          <div class="icon posts"><span class="material-symbols-outlined">description</span></div>
+          <div>
+            <label>Total Posts</label>
+            <strong><%= (stats && typeof stats.totalPosts === "number" ? stats.totalPosts : pager.total).toLocaleString() %></strong>
+          </div>
+        </article>
+        <article class="stat">
+          <div class="icon views"><span class="material-symbols-outlined">visibility</span></div>
+          <div>
+            <label>Total Views</label>
+            <strong><%= (stats && typeof stats.totalViews === "number" ? stats.totalViews : 0).toLocaleString() %></strong>
+          </div>
+        </article>
+        <article class="stat">
+          <div class="icon featured"><span class="material-symbols-outlined">star</span></div>
+          <div>
+            <label>Featured Stories</label>
+            <strong><%= (stats && typeof stats.featuredStories === "number" ? stats.featuredStories : 0).toLocaleString() %></strong>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      function getCookie(name) {
+        const parts = document.cookie ? document.cookie.split("; ") : [];
+        for (const part of parts) {
+          const [key, ...rest] = part.split("=");
+          if (key === name) return decodeURIComponent(rest.join("="));
+        }
+        return "";
+      }
+
+      async function toggleFeature(id) {
+        const csrfToken = getCookie("csrfToken");
+        const res = await fetch(`/admin/posts/${id}/feature`, {
+          method: "PATCH",
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json",
+            "x-csrf-token": csrfToken
+          }
+        });
+        if (res.ok) {
+          window.location.reload();
+          return;
+        }
+        const body = await res.json().catch(function () { return {}; });
+        alert(body.error || `Feature toggle failed (HTTP ${res.status})`);
+      }
+
+      document.getElementById("searchInput").addEventListener("input", function (e) {
+        const q = e.target.value.toLowerCase();
+        const rows = Array.from(document.querySelectorAll("#postsTableBody tr"));
+        rows.forEach((row) => {
+          const text = row.innerText.toLowerCase();
+          row.style.display = text.includes(q) ? "" : "none";
+        });
+      });
+    </script>
+    <script src="/js/auth-header.js"></script>
+    <script src="/sw-register.js"></script>
+  </body>
+</html>

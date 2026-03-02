@@ -1,0 +1,46 @@
+<%
+  const page = activePage || "";
+  const navClassName = navClass || "nav";
+  const searchEnabled = Boolean(showSearch);
+  const placeholder = typeof searchPlaceholder !== "undefined" ? searchPlaceholder : "Search posts...";
+  const initial = currentUser && currentUser.name ? currentUser.name.trim().charAt(0).toUpperCase() : "U";
+%>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/">
+      <span class="logo">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M4 4h8v8H4zM12 12h8v8h-8zM4 14h6v6H4zM14 4h6v6h-6z"></path>
+        </svg>
+      </span>
+      <span>Blog Platform</span>
+    </a>
+
+    <% if (searchEnabled) { %>
+    <div class="search-wrap">
+      <span class="material-symbols-outlined">search</span>
+      <input type="text" placeholder="<%= placeholder %>" />
+    </div>
+    <% } %>
+
+    <nav class="<%= navClassName %>">
+      <a class="<%= page === 'home' ? 'active' : '' %>" href="/">Home</a>
+      <a class="<%= page === 'dashboard' ? 'active' : '' %>" href="/me/posts">Dashboard</a>
+      <div class="menu">
+        <button class="menu-btn settings-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+          <span class="material-symbols-outlined" style="font-size:18px;">settings</span>
+          Settings
+        </button>
+        <div class="menu-list settings-menu">
+          <% if (currentUser && currentUser.role === "admin") { %>
+          <a href="/admin/dashboard">Admin Panel</a>
+          <% } %>
+          <a href="/about">About</a>
+          <a href="/contact">Contact Us</a>
+          <button class="logout-action" type="button">Logout</button>
+        </div>
+      </div>
+      <a href="/me" title="Profile"><span class="avatar"><%= initial %></span></a>
+    </nav>
+  </div>
+</header>

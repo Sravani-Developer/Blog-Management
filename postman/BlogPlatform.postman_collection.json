@@ -1,0 +1,177 @@
+{
+  "info": {
+    "_postman_id": "b1c6d5a4-1c7c-4f8d-9f6d-1b2c3d4e5f60",
+    "name": "BlogPlatform Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login Page (UI)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/login"
+          }
+        },
+        {
+          "name": "Register Page (UI)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/register"
+          }
+        },
+        {
+          "name": "Home Page (UI, Protected)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/home"
+          }
+        },
+        {
+          "name": "Me Page (UI, Protected)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/me/ui"
+          }
+        },
+        {
+          "name": "Bootstrap Admin (one-time)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/bootstrap"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/login"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/logout"
+          }
+        },
+        {
+          "name": "Me (Protected)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Posts (Admin Only)",
+      "item": [
+        {
+          "name": "Posts Page (UI, Protected)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/posts/ui"
+          }
+        },
+        {
+          "name": "Create Post Page (UI, Protected)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/posts/create"
+          }
+        },
+        {
+          "name": "List Posts",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/posts"
+          }
+        },
+        {
+          "name": "Get Post By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/posts/{{postId}}"
+          }
+        },
+        {
+          "name": "Create Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"First Post\",\n  \"content\": \"This is the first post content.\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/posts"
+          }
+        },
+        {
+          "name": "Update Post",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title\",\n  \"content\": \"Updated content for the post.\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/posts/{{postId}}"
+          }
+        },
+        {
+          "name": "Delete Post",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/admin/posts/{{postId}}"
+          }
+        }
+      ]
+    }
+  ]
+}

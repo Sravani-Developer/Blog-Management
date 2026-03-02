@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Posts - Blog Admin</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --primary: #1f2b93;
+        --bg: #f3f5f9;
+        --card: #ffffff;
+        --text: #162b48;
+        --muted: #6f84a0;
+        --line: #dce4ef;
+        --green: #12b86a;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Work Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        padding: 14px 22px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary);
+        font-size: 28px;
+        font-weight: 800;
+      }
+
+      .brand-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+
+      .menu {
+        display: flex;
+        gap: 28px;
+        align-items: center;
+      }
+
+      .menu a {
+        text-decoration: none;
+        color: #334a67;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .menu button {
+        text-decoration: none;
+        color: #334a67;
+        font-size: 14px;
+        font-weight: 600;
+        border: 0;
+        background: transparent;
+        padding: 0;
+      }
+
+      .menu a.active {
+        color: var(--primary);
+        border-bottom: 3px solid var(--primary);
+        padding-bottom: 10px;
+      }
+
+      .page {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 34px 20px 26px;
+        width: 100%;
+        flex: 1;
+      }
+
+      .page-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .title {
+        margin: 0;
+        color: #0f1f36;
+        font-size: 42px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .subtitle {
+        margin-top: 10px;
+        color: #4f6687;
+        font-size: 18px;
+      }
+
+      .create-btn {
+        border: 0;
+        border-radius: 14px;
+        background: var(--primary);
+        color: #fff;
+        font-weight: 700;
+        font-size: 16px;
+        padding: 14px 26px;
+        box-shadow: 0 8px 18px rgba(31, 43, 147, 0.22);
+      }
+
+      .toolbar {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .left-tools {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .tabs {
+        border: 1px solid #d8e1ed;
+        border-radius: 10px;
+        overflow: hidden;
+        display: inline-flex;
+      }
+
+      .tab {
+        border: 0;
+        border-right: 1px solid #e0e7f2;
+        background: #fff;
+        color: #4d6381;
+        padding: 10px 18px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .tab:last-child { border-right: 0; }
+      .tab.active {
+        background: var(--primary);
+        color: #fff;
+      }
+
+      .filter-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-left: 1px solid #e2e8f1;
+        padding-left: 14px;
+      }
+
+      .filter-wrap label {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: #4b6281;
+      }
+
+      .filter-select {
+        border: 0;
+        background: #edf1f8;
+        border-radius: 999px;
+        color: #566d8b;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 6px 12px;
+      }
+
+      .showing {
+        color: #4f6685;
+        font-size: 18px;
+      }
+
+      .showing strong { color: #1a2d49; }
+
+      .table-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+
+      .table thead th {
+        background: #f6f8fc;
+        color: #536b8a;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 700;
+        border-bottom: 1px solid var(--line);
+        padding: 14px 12px;
+      }
+
+      .table td {
+        border-top: 1px solid #e7edf6;
+        padding: 16px 12px;
+        vertical-align: middle;
+      }
+
+      .post-title {
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 16px;
+      }
+
+      .post-slug {
+        color: #6f84a0;
+        font-size: 13px;
+      }
+
+      .chip {
+        display: inline-block;
+        background: #edf1f8;
+        color: #4e6684;
+        border-radius: 999px;
+        padding: 4px 12px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #7f8ea8;
+      }
+
+      .status.published { color: var(--green); }
+      .status.published .dot { background: var(--green); }
+
+      .actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .action-btn {
+        border: 0;
+        background: transparent;
+        color: #4c6382;
+        font-size: 16px;
+        font-weight: 700;
+        padding: 0;
+      }
+
+      .table-foot {
+        border-top: 1px solid #e7edf6;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .pager {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .page-btn {
+        border: 0;
+        background: transparent;
+        color: #4f6685;
+        font-weight: 700;
+        border-radius: 8px;
+        min-width: 34px;
+        height: 34px;
+      }
+
+      .page-btn.active {
+        background: var(--primary);
+        color: #fff;
+      }
+
+      .page-btn:disabled { opacity: 0.45; }
+
+      .empty-row {
+        padding: 26px;
+        text-align: center;
+        color: #6e83a0;
+        font-weight: 600;
+      }
+
+      .footer {
+        margin-top: 26px;
+        border-top: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .footer-inner {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #8ca0ba;
+        font-size: 13px;
+      }
+
+      .footer-links a {
+        color: #59718f;
+        margin-left: 18px;
+        text-decoration: none;
+      }
+
+      @media (max-width: 991.98px) {
+        .menu { gap: 12px; flex-wrap: wrap; }
+        .title { font-size: 38px; }
+        .subtitle { font-size: 18px; }
+        .page-head, .toolbar, .footer-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
+        .left-tools { flex-direction: column; align-items: flex-start; }
+        .table-responsive { font-size: 13px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="brand">
+          <span class="brand-icon">⊞</span>
+          Blog Admin
+        </div>
+        <nav class="menu">
+          <a href="/admin/home">Home</a>
+          <a class="active" href="/admin/posts/ui">Blog</a>
+          <a href="/admin/me/ui">About</a>
+          <a href="/admin/contact/ui">Contact</a>
+          <button id="logoutBtn" type="button">Logout</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="page-head">
+        <div>
+          <h1 class="title">Manage Posts</h1>
+          <p class="subtitle">Oversee your content, track performance, and publish new stories.</p>
+        </div>
+        <a href="/admin/posts/create" class="create-btn text-decoration-none">＋ Create New Post</a>
+      </section>
+
+      <section class="toolbar">
+        <div class="left-tools">
+          <strong>All Posts</strong>
+        </div>
+        <div id="showingText" class="showing">Showing <strong>0-0</strong> of <strong>0</strong> posts</div>
+      </section>
+
+      <section class="table-card">
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th style="width:48px;"><input type="checkbox" id="selectAll" /></th>
+                <th>TITLE</th>
+                <th style="width:150px;">DATE</th>
+                <th style="width:150px; text-align:right;">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="postsTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="table-foot">
+          <button id="prevBtn" class="page-btn" type="button">‹ Previous</button>
+          <div id="pageNumbers" class="pager"></div>
+          <button id="nextBtn" class="page-btn" type="button">Next ›</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>© 2023 Blog Admin Dashboard. All rights reserved.</div>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Help Center</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      const PAGE_SIZE = 5;
+      let currentAdminId = "";
+      let allPosts = [];
+      let filteredPosts = [];
+      let currentPage = 1;
+
+      const slugify = (text) =>
+        String(text || "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+
+      const applyFilters = () => {
+        filteredPosts = [...allPosts];
+
+        const totalPages = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        renderTable();
+        renderPager(totalPages);
+        renderShowing();
+      };
+
+      const renderShowing = () => {
+        const total = filteredPosts.length;
+        const start = total === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+        const end = Math.min(total, currentPage * PAGE_SIZE);
+        $("#showingText").html(`Showing <strong>${start}-${end}</strong> of <strong>${total}</strong> posts`);
+      };
+
+      const renderTable = () => {
+        const body = $("#postsTableBody");
+        body.empty();
+
+        if (filteredPosts.length === 0) {
+          body.html('<tr><td colspan="4" class="empty-row">No posts available</td></tr>');
+          return;
+        }
+
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const pageItems = filteredPosts.slice(start, start + PAGE_SIZE);
+
+        pageItems.forEach((post) => {
+          const row = `
+            <tr>
+              <td><input type="checkbox" class="row-check" data-id="${post._id}" /></td>
+              <td>
+                <div class="post-title">${post.title}</div>
+                <div class="post-slug">slug: /${slugify(post.title) || post._id}</div>
+              </td>
+              <td>${new Date(post.createdAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })}</td>
+              <td style="text-align:right;">
+                <span class="actions">
+                  <button class="action-btn" data-action="view" data-id="${post._id}" title="View">👁</button>
+                  <button class="action-btn" data-action="edit" data-id="${post._id}" title="Edit">✎</button>
+                  <button class="action-btn" data-action="delete" data-id="${post._id}" title="Delete">🗑</button>
+                </span>
+              </td>
+            </tr>
+          `;
+          body.append(row);
+        });
+      };
+
+      const renderPager = (totalPages) => {
+        const pager = $("#pageNumbers");
+        pager.empty();
+
+        if (totalPages <= 1) {
+          pager.html('<button class="page-btn active" type="button">1</button>');
+          $("#prevBtn").prop("disabled", true);
+          $("#nextBtn").prop("disabled", true);
+          return;
+        }
+
+        const pages = [];
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+
+        pages.forEach((p) => {
+          pager.append(`<button class="page-btn ${p === currentPage ? "active" : ""}" data-page="${p}" type="button">${p}</button>`);
+        });
+
+        $("#prevBtn").prop("disabled", currentPage === 1);
+        $("#nextBtn").prop("disabled", currentPage === totalPages);
+      };
+
+      const loadPosts = async () => {
+        try {
+          const meRes = await fetch("/admin/me");
+          if (meRes.status === 401) {
+            window.location.href = "/admin/login";
+            return;
+          }
+          const meJson = await meRes.json();
+          if (!meRes.ok || !meJson.success) throw new Error("Unauthorized");
+          currentAdminId = meJson.data.admin.id || meJson.data.admin._id;
+
+          const postsRes = await fetch("/admin/posts");
+          const postsJson = await postsRes.json();
+          if (!postsRes.ok || !postsJson.success) throw new Error(postsJson.error || "Failed");
+
+          allPosts = (postsJson.data || [])
+            .filter((p) => String(p.author) === String(currentAdminId))
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+          applyFilters();
+        } catch (err) {
+          $("#postsTableBody").html('<tr><td colspan="4" class="empty-row">Unable to load posts</td></tr>');
+          $("#showingText").html('Showing <strong>0-0</strong> of <strong>0</strong> posts');
+        }
+      };
+
+      $(document).on("click", "#pageNumbers .page-btn", function () {
+        currentPage = Number($(this).data("page"));
+        applyFilters();
+      });
+
+      $("#prevBtn").on("click", function () {
+        if (currentPage > 1) {
+          currentPage -= 1;
+          applyFilters();
+        }
+      });
+
+      $("#nextBtn").on("click", function () {
+        const totalPages = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
+        if (currentPage < totalPages) {
+          currentPage += 1;
+          applyFilters();
+        }
+      });
+
+      $(document).on("click", ".action-btn", async function () {
+        const id = $(this).data("id");
+        const action = $(this).data("action");
+        const post = allPosts.find((p) => p._id === id);
+        if (!post) return;
+
+        if (action === "view") {
+          window.location.href = `/admin/posts/${id}/ui`;
+          return;
+        }
+
+        if (action === "edit") {
+          window.location.href = `/admin/posts/${id}/edit`;
+          return;
+        }
+
+        if (action === "delete") {
+          if (!window.confirm("Delete this post?")) return;
+          const res = await fetch(`/admin/posts/${id}`, { method: "DELETE" });
+          const json = await res.json();
+          if (!res.ok || !json.success) {
+            window.alert(json.error || "Failed to delete post");
+            return;
+          }
+          await loadPosts();
+        }
+      });
+
+      $("#selectAll").on("change", function () {
+        $(".row-check").prop("checked", $(this).is(":checked"));
+      });
+
+      $("#logoutBtn").on("click", function () {
+        $.post("/admin/logout").always(function () {
+          window.location.href = "/admin/login";
+        });
+      });
+
+      loadPosts();
+    </script>
+    <script src="/sw-register.js"></script>
+  </body>
+</html>

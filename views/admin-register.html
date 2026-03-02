@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Bootstrap</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    />
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-light bg-white border-bottom">
+      <span class="navbar-brand mb-0 h1">BlogPlatform Admin</span>
+      <a class="btn btn-outline-primary btn-sm" href="/admin/login">Login</a>
+    </nav>
+
+    <main class="container py-4">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h1 class="h4 mb-3">Bootstrap Admin (One Time)</h1>
+              <form id="registerForm">
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <input id="name" type="text" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input id="email" type="email" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input id="password" type="password" minlength="8" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Admin</button>
+              </form>
+              <div id="status" class="small mt-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      $("#registerForm").on("submit", function (e) {
+        e.preventDefault();
+        $("#status").removeClass("text-danger text-success").text("Creating admin...");
+
+        $.ajax({
+          url: "/admin/bootstrap",
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            name: $("#name").val().trim(),
+            email: $("#email").val().trim(),
+            password: $("#password").val()
+          })
+        })
+          .done(function (res) {
+            if (res.success) {
+              $("#status").addClass("text-success").text("Admin created");
+              window.location.href = "/admin/home";
+            } else {
+              $("#status").addClass("text-danger").text(res.error || "Failed");
+            }
+          })
+          .fail(function (xhr) {
+            const msg = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "Failed";
+            $("#status").addClass("text-danger").text(msg);
+          });
+      });
+    </script>
+    <script src="/sw-register.js"></script>
+  </body>
+</html>

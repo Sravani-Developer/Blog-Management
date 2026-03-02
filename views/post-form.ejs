@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= mode === "create" ? "Create New Post" : "Edit Post" %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f4f6fb;
+        --surface: #ffffff;
+        --line: #d8dfec;
+        --muted: #5e7392;
+        --text: #0f1830;
+        --brand: #232d91;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Work Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .topbar { height: 74px; background: #fff; border-bottom: 1px solid var(--line); }
+      .topbar-inner {
+        max-width: 1340px;
+        margin: 0 auto;
+        height: 100%;
+        padding: 0 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .brand { display: inline-flex; gap: 10px; align-items: center; color: var(--text); text-decoration: none; font-weight: 800; font-size: 20px; }
+      .brand .logo { color: var(--brand); display: inline-flex; }
+      .top-actions,
+      .admin-nav { display: flex; align-items: center; gap: 22px; color: #35486a; margin-left: auto; }
+      .top-actions a,
+      .admin-nav a { text-decoration: none; color: #283d61; font-size: 15px; font-weight: 500; }
+      .top-actions a.active,
+      .admin-nav a.active { color: var(--brand); border-bottom: 2px solid var(--brand); padding-bottom: 8px; font-weight: 700; }
+      .menu { position: relative; }
+      .menu-btn { border: 0; background: transparent; color: #283d61; font-size: 15px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+      .menu-list {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 26px;
+        width: 170px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow: 0 12px 24px rgba(16, 24, 40, 0.12);
+        padding: 6px 0;
+        z-index: 40;
+      }
+      .menu-list.open { display: block; }
+      .menu-list a,
+      .menu-list button {
+        display: block;
+        width: 100%;
+        border: 0;
+        background: transparent;
+        text-align: left;
+        padding: 9px 12px;
+        color: #2d4366;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .menu-list a:hover,
+      .menu-list button:hover { background: #f3f6fd; color: var(--brand); }
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--brand);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .shell {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+      }
+      .crumb {
+        color: #7b8ea9;
+        font-size: 14px;
+      }
+      .title {
+        margin: 10px 0 6px;
+        font-size: 40px;
+        font-weight: 800;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 20px;
+        margin-bottom: 20px;
+        line-height: 1.35;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 700;
+      }
+      .input, .textarea {
+        width: 100%;
+        border: 1px solid #bcc8dd;
+        border-radius: 10px;
+        font-size: 16px;
+        padding: 12px 14px;
+        color: #2a3f60;
+      }
+      .textarea {
+        min-height: 300px;
+        resize: vertical;
+      }
+      .field { margin-bottom: 18px; }
+      .dropzone {
+        border: 2px dashed #c3cee0;
+        border-radius: 10px;
+        padding: 28px 14px;
+        text-align: center;
+        color: #7388a8;
+        background: #f8faff;
+        cursor: pointer;
+      }
+      .dropzone.drag {
+        border-color: var(--brand);
+        background: #eff3ff;
+      }
+      .preview {
+        margin-top: 10px;
+        display: none;
+      }
+      .preview img {
+        width: 100%;
+        max-height: 240px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid #ccd5e5;
+      }
+      .image-tools {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .image-status {
+        font-size: 13px;
+        color: #52688a;
+      }
+      .btn-mini {
+        border: 1px solid #bcc8dd;
+        background: #fff;
+        color: #334a6e;
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn-mini[hidden] {
+        display: none;
+      }
+      .img-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 24, 48, 0.72);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 90;
+      }
+      .img-modal.open {
+        display: flex;
+      }
+      .img-modal-card {
+        max-width: 980px;
+        width: 100%;
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #d8dfec;
+        overflow: hidden;
+      }
+      .img-modal-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 14px;
+        border-bottom: 1px solid #e6ebf4;
+      }
+      .img-modal-body {
+        padding: 14px;
+      }
+      .img-modal-body img {
+        width: 100%;
+        max-height: 70vh;
+        object-fit: contain;
+        border-radius: 10px;
+        border: 1px solid #ccd5e5;
+        background: #f8faff;
+      }
+      .small {
+        font-size: 13px;
+        color: #7b8ea9;
+      }
+      .meta {
+        margin: 18px 0;
+        padding: 14px 0;
+        border-top: 1px solid #e6ebf4;
+        border-bottom: 1px solid #e6ebf4;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #52688a;
+      }
+      .meta-item .material-symbols-outlined {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        color: var(--brand);
+        background: #eef1fb;
+        font-size: 20px;
+      }
+      .actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .btns {
+        display: flex;
+        gap: 10px;
+      }
+      .btn {
+        border: 0;
+        border-radius: 10px;
+        height: 46px;
+        padding: 0 20px;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+      }
+      .btn-primary {
+        background: var(--brand);
+        color: #fff;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: #334a6e;
+      }
+      .alert {
+        display: none;
+        margin-bottom: 12px;
+        background: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+        padding: 10px 12px;
+        border-radius: 8px;
+      }
+      .field-error {
+        display: none;
+        color: #b91c1c;
+        font-size: 13px;
+        margin-top: 6px;
+      }
+      @media (max-width: 900px) {
+        .title { font-size: 32px; }
+        .sub { font-size: 18px; }
+        .meta { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <% if (currentUser && currentUser.role === "admin") { %>
+    <%- include("partials/admin-header", { activeAdminPage: "posts" }) %>
+    <% } else { %>
+    <%- include("partials/auth-header", { activePage: "dashboard", navClass: "top-actions", showSearch: false }) %>
+    <% } %>
+
+    <main class="shell">
+      <div class="crumb">Posts &nbsp;&rsaquo;&nbsp; <%= mode === "create" ? "Create New Post" : "Edit Post" %></div>
+      <h1 class="title"><%= mode === "create" ? "Create New Post" : "Edit Post" %></h1>
+      <p class="sub">Compose your next story. Drafts are automatically saved as you type.</p>
+
+      <section class="card">
+        <% if (error) { %>
+        <div style="color:#b91c1c;margin-bottom:10px;"><%= error %></div>
+        <% } %>
+        <div id="msg" class="alert"></div>
+
+        <form id="postForm" enctype="multipart/form-data">
+          <div class="field">
+            <label for="title">Post Title</label>
+            <input class="input" id="title" name="title" maxlength="120" minlength="3" required placeholder="Enter a captivating title..." value="<%= post ? post.title : '' %>" />
+            <div id="titleError" class="field-error"></div>
+          </div>
+
+          <div class="field">
+            <label>Featured Image</label>
+            <input id="featuredImage" name="featuredImage" type="file" accept=".png,.jpg,.jpeg,.gif,.webp" style="display:none;" />
+            <div id="dropzone" class="dropzone">
+              <span class="material-symbols-outlined">upload</span>
+              <div><strong>Click to upload</strong> or drag and drop</div>
+              <div class="small">PNG, JPG, JPEG, GIF, WEBP (MAX. 5MB)</div>
+            </div>
+            <div class="preview" id="preview">
+              <img id="previewImg" alt="" />
+            </div>
+            <div class="image-tools">
+              <div id="imageStatus" class="image-status">No image selected.</div>
+              <button id="previewBtn" class="btn-mini" type="button" hidden>Preview</button>
+            </div>
+            <% if (post && post.featuredImage) { %>
+            <div class="small" style="margin-top:8px;">Current image: <a href="<%= post.featuredImage %>" target="_blank">View</a></div>
+            <% } %>
+          </div>
+
+          <div class="field">
+            <label for="category">Category</label>
+            <select class="input" id="category" name="category">
+              <option value="">Auto detect (recommended)</option>
+              <% ["Database", "Code Quality", "DevOps", "Frontend", "Security"].forEach(function(cat) { %>
+              <option value="<%= cat %>" <%= post && post.category === cat && post.categorySource === "manual" ? "selected" : "" %>><%= cat %></option>
+              <% }) %>
+            </select>
+            <div class="small" style="margin-top:6px;">
+              <% if (post && post.category) { %>
+              Current: <strong><%= post.category %></strong> (<%= post.categorySource || "auto" %>)
+              <% } else { %>
+              Leave on auto detect to classify from title/content keywords.
+              <% } %>
+            </div>
+            <div id="categoryError" class="field-error"></div>
+          </div>
+
+          <div class="field">
+            <label for="content">Content</label>
+            <textarea class="textarea" id="content" name="content" minlength="20" maxlength="5000" required placeholder="Start writing your story here..."><%= post ? post.content : '' %></textarea>
+            <div id="contentError" class="field-error"></div>
+          </div>
+
+          <div class="field">
+            <label for="tagsInput">Tags</label>
+            <input class="input" id="tagsInput" type="text" placeholder="Add tags (comma separated)..." />
+          </div>
+
+          <div class="meta">
+            <div class="meta-item"><span class="material-symbols-outlined">visibility</span> Visibility: Publicly visible once published</div>
+            <div class="meta-item"><span class="material-symbols-outlined">schedule</span> Schedule: Publish immediately</div>
+          </div>
+
+          <div class="actions">
+            <div class="small">Draft saved at <span id="draftTime"></span></div>
+            <div class="btns">
+              <a class="btn btn-ghost" href="<%= cancelHref || '/me/posts' %>">Cancel</a>
+              <button class="btn btn-primary" type="submit"><span class="material-symbols-outlined" style="font-size:16px;margin-right:6px;">play_arrow</span> Save &amp; Publish</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <div id="imgModal" class="img-modal" aria-hidden="true">
+      <div class="img-modal-card">
+        <div class="img-modal-head">
+          <strong>Image Preview</strong>
+          <button id="closeImgModal" class="btn-mini" type="button">Close</button>
+        </div>
+        <div class="img-modal-body">
+          <img id="modalPreviewImg" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const draftTime = document.getElementById("draftTime");
+      draftTime.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+      const dropzone = document.getElementById("dropzone");
+      const fileInput = document.getElementById("featuredImage");
+      const preview = document.getElementById("preview");
+      const previewImg = document.getElementById("previewImg");
+      const imageStatus = document.getElementById("imageStatus");
+      const previewBtn = document.getElementById("previewBtn");
+      const imgModal = document.getElementById("imgModal");
+      const modalPreviewImg = document.getElementById("modalPreviewImg");
+      const closeImgModal = document.getElementById("closeImgModal");
+      let currentPreviewSrc = "";
+
+      function setPreviewSource(src) {
+        if (!src) return;
+        currentPreviewSrc = src;
+        previewImg.style.display = "none";
+        previewImg.onload = () => {
+          previewImg.style.display = "block";
+        };
+        previewImg.onerror = () => {
+          preview.style.display = "none";
+          previewBtn.hidden = true;
+          imageStatus.textContent = "Unable to preview selected image.";
+        };
+        previewImg.src = src;
+        preview.style.display = "block";
+        previewBtn.hidden = false;
+      }
+
+      function showPreview(file) {
+        if (!file) {
+          imageStatus.textContent = "No image selected.";
+          return;
+        }
+        imageStatus.textContent = `Selected: ${file.name}`;
+        const reader = new FileReader();
+        reader.onload = () => {
+          setPreviewSource(reader.result);
+        };
+        reader.onerror = () => {
+          imageStatus.textContent = "Unable to preview selected image.";
+        };
+        reader.readAsDataURL(file);
+      }
+
+      dropzone.addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", (e) => showPreview(e.target.files[0]));
+      dropzone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropzone.classList.add("drag");
+      });
+      dropzone.addEventListener("dragleave", () => dropzone.classList.remove("drag"));
+      dropzone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropzone.classList.remove("drag");
+        const file = e.dataTransfer.files && e.dataTransfer.files[0];
+        if (!file) return;
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+        showPreview(file);
+      });
+
+      previewBtn.addEventListener("click", () => {
+        if (!currentPreviewSrc) return;
+        modalPreviewImg.src = currentPreviewSrc;
+        imgModal.classList.add("open");
+        imgModal.setAttribute("aria-hidden", "false");
+      });
+
+      closeImgModal.addEventListener("click", () => {
+        imgModal.classList.remove("open");
+        imgModal.setAttribute("aria-hidden", "true");
+      });
+
+      imgModal.addEventListener("click", (e) => {
+        if (e.target === imgModal) {
+          imgModal.classList.remove("open");
+          imgModal.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      <% if (post && post.featuredImage) { %>
+      imageStatus.textContent = "Using current image.";
+      setPreviewSource("<%= post.featuredImage %>");
+      <% } %>
+
+      document.getElementById("postForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fieldErrors = {
+          title: document.getElementById("titleError"),
+          category: document.getElementById("categoryError"),
+          content: document.getElementById("contentError")
+        };
+        Object.values(fieldErrors).forEach((el) => {
+          el.style.display = "none";
+          el.textContent = "";
+        });
+        const box = document.getElementById("msg");
+        box.style.display = "none";
+        box.textContent = "";
+
+        const isCreate = "<%= mode %>" === "create";
+        const url = "<%= submitUrl || '' %>";
+        const method = isCreate ? "POST" : "PUT";
+        if (!url) {
+          box.style.display = "block";
+          box.textContent = "Cannot submit this form due to invalid post context.";
+          return;
+        }
+        const formData = new FormData(e.target);
+
+        const res = await fetch(url, {
+          method,
+          headers: { Accept: "application/json" },
+          body: formData
+        });
+        const body = await res.json();
+        if (!res.ok) {
+          if (body.details && typeof body.details === "object") {
+            Object.keys(body.details).forEach((field) => {
+              if (!fieldErrors[field]) return;
+              fieldErrors[field].style.display = "block";
+              fieldErrors[field].textContent = body.details[field];
+            });
+          }
+          box.style.display = "block";
+          box.textContent = body.error || "Request failed";
+          return;
+        }
+        window.location.href = "<%= successRedirect || '/me/posts' %>";
+      });
+    </script>
+    <script src="/js/auth-header.js"></script>
+  </body>
+</html>
